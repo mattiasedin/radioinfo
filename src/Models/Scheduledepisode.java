@@ -30,12 +30,12 @@ public class Scheduledepisode extends DataModel {
         return title;
     }
 
-    @TableDisplay(visible = true, order = 2, name = "Start time")
+    @TableDisplay(visible = true, order = 2, name = "Start")
     public Date getStarttimeutc() {
         return starttimeutc;
     }
 
-    @TableDisplay(visible = true, order = 3, name = "End time")
+    @TableDisplay(visible = true, order = 3, name = "End")
     public Date getEndtimeutc() {
         return endtimeutc;
     }

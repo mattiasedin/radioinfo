@@ -18,20 +18,10 @@ import java.util.Date;
  * Created by mattias on 1/11/17.
  */
 public class TableView<T extends DataModel> extends JPanel {
-    public JTable table;
+    private JScrollPane scrollPane;
+    private JTable table;
     private DataTableModel<T> tableModel;
-    private ContentViewManager viewManager;
-    private int selectedRow;
     private ActionListener onListItemClickListener;
-
-    public TableView(Class<T> typeParameterClass) {
-        super(new BorderLayout());
-        tableModel = new DataTableModel<T>(typeParameterClass);
-        table = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
-        this.add(scrollPane, BorderLayout.CENTER);
-    }
-
 
 
     public TableView(Class<T> typeParameterClass, ArrayList<T> data) {
@@ -40,8 +30,6 @@ public class TableView<T extends DataModel> extends JPanel {
         table = new JTable(tableModel);
         table.getColumnModel().getColumn(0).setMinWidth(200);
         table.getColumnModel().getColumn(0).setMaxWidth(200);
-        //table.setDefaultRenderer(Date.class, new Controller.DateRenderer());
-        //table.getColumnModel().getColumn(1).setCellRenderer(new Controller.DateCellRenderer());
 
         updateRowHeights(table);
         table.addMouseListener(new MouseClickListener() {
@@ -54,8 +42,13 @@ public class TableView<T extends DataModel> extends JPanel {
                 repaint();
             }
         });
-        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane = new JScrollPane(table);
         this.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    public T getSelectedItem() {
+        int selectedIndex = table.getSelectionModel().getLeadSelectionIndex();
+        return tableModel.getOfferAtRow(selectedIndex);
     }
 
     public void setData(ArrayList<T> data) {
@@ -86,5 +79,12 @@ public class TableView<T extends DataModel> extends JPanel {
 
     public void setOnListItemClickListener(ActionListener onListItemClickListener) {
         this.onListItemClickListener = onListItemClickListener;
+    }
+
+    public void scrollTo(int index) {
+        if (index <= table.getRowCount()) {
+            int scrollValue = table.getRowHeight() * index;
+            scrollPane.getVerticalScrollBar().setValue(scrollValue);
+        }
     }
 }

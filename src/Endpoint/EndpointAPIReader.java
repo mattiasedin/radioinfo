@@ -3,6 +3,7 @@ package Endpoint;
 import Exceptions.ClassTypeException;
 import Exceptions.DataDoesNotMatchModelException;
 import Exceptions.InvalidUrlException;
+import Exceptions.NodeInstantiationException;
 import Models.ApiModel;
 import Models.Pagination;
 import org.w3c.dom.Document;
@@ -31,18 +32,14 @@ import java.util.*;
  * @param <T> the type of the value being boxed
  */
 public class EndpointAPIReader<T> {
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
 
     private final Class<T> typeParameterClass;
 
-
     public EndpointAPIReader(Class<T> typeParameterClass) {
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
         this.typeParameterClass = typeParameterClass;
     }
 
-    public ArrayList<T> getDataListFromUri(String uri) throws DataDoesNotMatchModelException, InvalidUrlException {
+    public ArrayList<T> getDataListFromUri(String uri) throws NodeInstantiationException, DataDoesNotMatchModelException, InvalidUrlException {
         Document doc = getXMLDocument(uri);
 
         ApiModel annotation = typeParameterClass.getAnnotation(ApiModel.class);
@@ -77,7 +74,7 @@ public class EndpointAPIReader<T> {
         return null;
     }
 
-    public T getDataFromUri(String uri) throws DataDoesNotMatchModelException, InvalidUrlException {
+    public T getDataFromUri(String uri) throws NodeInstantiationException, DataDoesNotMatchModelException, InvalidUrlException {
         Document doc = getXMLDocument(uri);
 
         NodeReader<T> dataNodeReader = new NodeReader<>(typeParameterClass);

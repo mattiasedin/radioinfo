@@ -22,12 +22,9 @@ public class PreferencesView extends JPanel implements ChangeListener {
 
         JPanel textContainer = new JPanel(new GridLayout(0,1));
 
-        add(withPadding(textContainer, 10, 10), BorderLayout.NORTH);
+        add(ViewHelper.withPadding(textContainer, 10, 10), BorderLayout.NORTH);
 
-
-        JLabel title = new JLabel("<html>Preferences</html>");
-        title.setFont(new Font(getFont().getName(), Font.PLAIN, (int) (getFont().getSize() * 1.5)));
-        textContainer.add(title);
+        textContainer.add(ViewHelper.toLabel("Preferences", getFont(), 1.5));
 
         JLabel sliderInfo = new JLabel("<html>" +
                 "Set the update interval, the value is defined as minutes between each update."
@@ -43,7 +40,7 @@ public class PreferencesView extends JPanel implements ChangeListener {
         slider.setPaintLabels(true);
         slider.setPreferredSize(new Dimension(700, 150));
 
-        add(withPadding((slider),10,10), BorderLayout.CENTER);
+        add(ViewHelper.withPadding((slider),10,10), BorderLayout.CENTER);
     }
 
     @Override
@@ -62,10 +59,5 @@ public class PreferencesView extends JPanel implements ChangeListener {
         }
     }
 
-    public Component withPadding(Component c, int topBottom, int leftRight) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBorder(new EmptyBorder(topBottom, leftRight, topBottom, leftRight));
-        p.add(c, BorderLayout.CENTER);
-        return p;
-    }
+
 }

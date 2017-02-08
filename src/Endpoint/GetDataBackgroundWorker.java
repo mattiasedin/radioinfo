@@ -1,7 +1,6 @@
 package Endpoint;
 
-import Exceptions.DataDoesNotMatchModelException;
-import Exceptions.InvalidUrlException;
+import Exceptions.*;
 import Models.DataModel;
 
 import javax.swing.*;
@@ -30,7 +29,7 @@ public class GetDataBackgroundWorker<T extends DataModel> extends SwingWorker<T,
         try {
             T obj = dr.getDataFromUri(dataUri);
             return obj;
-        } catch (DataDoesNotMatchModelException | InvalidUrlException e) {
+        } catch (NodeInstantiationException | DataDoesNotMatchModelException | InvalidUrlException e) {
             failedException = e;
         }
         return null;

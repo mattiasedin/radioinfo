@@ -1,10 +1,9 @@
 package Endpoint;
 import Exceptions.DataDoesNotMatchModelException;
-import Models.ApiModel;
+import Exceptions.NodeInstantiationException;
 import Models.ApiModelData;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.helpers.XMLReaderAdapter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.TimeZone;
 
 /**
@@ -22,13 +20,15 @@ import java.util.TimeZone;
  */
 public class NodeReader<T> {
 
+    private final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
     private Class<T> classType;
     private SimpleDateFormat formatter;
 
     public NodeReader(Class<T> classType) {
         this.classType = classType;
 
-        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        formatter = new SimpleDateFormat(DATE_TIME_FORMAT);
         formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
@@ -44,7 +44,7 @@ public class NodeReader<T> {
 
 
     /*Instansiate object from generic type*/
-    public T nodeToObject(Node currentNode) {
+    public T nodeToObject(Node currentNode) throws NodeInstantiationException, DataDoesNotMatchModelException {
 
         T dataElement = null;
         try {
@@ -109,8 +109,10 @@ public class NodeReader<T> {
                 }
             }
 
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            e.printStackTrace();
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException  e) {
+            throw new NodeInstantiationException(e.getMessage());
+        } catch (ParseException ep) {
+            throw new DataDoesNotMatchModelException(ep.getMessage());
         }
         return dataElement;
     }
@@ -125,7 +127,7 @@ public class NodeReader<T> {
         return currentNode;
     }
 
-    public ArrayList<T> getObjectListFromNode(Node n, String listContainerName) throws DataDoesNotMatchModelException {
+    public ArrayList<T> getObjectListFromNode(Node n, String listContainerName) throws DataDoesNotMatchModelException, NodeInstantiationException {
         Node nodeListContainer = getNodeWithName(n, listContainerName);
 
         if (nodeListContainer == null)
@@ -146,16 +148,20 @@ public class NodeReader<T> {
 
 
 
-    private void invokeSetter(Object instance, Method method, Object value) throws IllegalAccessException, InvocationTargetException {
+    private void invokeSetter(Object instance, Method method, Object value) throws IllegalAccessException, InvocationTargetException, ParseException {
         Type[] paramTypes = method.getGenericParameterTypes();
-
         try {
             if (paramTypes[0].getTypeName().equals("java.lang.String")) {
                 method.invoke(instance, value);
             }
 
             else if (paramTypes[0].getTypeName().equals("int")) {
-                method.invoke(instance, Integer.parseInt((String) value));
+                try {
+                    method.invoke(instance, Integer.parseInt((String) value));
+                } catch (NumberFormatException | ClassCastException e) {
+                    throw new ParseException("Value malformed, tried to cast object to integer but failed.", 0);
+                }
+
             }
 
             else if (paramTypes[0].getTypeName().equals("java.util.Date")) {
@@ -163,14 +169,13 @@ public class NodeReader<T> {
                     Date d = formatter.parse((String) value);
                     method.invoke(instance, d);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    throw new ParseException("Date string malformed, string does not match format "+ DATE_TIME_FORMAT, e.getErrorOffset());
                 }
             } else {
                 method.invoke(instance, value);
             }
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (IllegalArgumentException e2) {
+            throw new ParseException("Tried to invoke setter with wrong argument type.", 0);
         }
-
     }
 }

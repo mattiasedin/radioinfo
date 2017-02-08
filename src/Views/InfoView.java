@@ -11,36 +11,16 @@ import java.awt.*;
 public class InfoView extends JPanel {
 
     public InfoView(Program p) {
-        super(new GridBagLayout());
+        super(new BorderLayout());
 
+        JPanel stackPanel = new JPanel();
+        stackPanel.setLayout(new BoxLayout(stackPanel, BoxLayout.Y_AXIS));
+        add(stackPanel, BorderLayout.NORTH);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-
-        this.add(new JLabel(p.getName()), gbc);
-
-        gbc.gridy++;
-
-        //JPanel txtpanel = new JPanel(new GridLayout(0,1));
-        this.add(new JLabel("Brodcast info:"), gbc);
-
-
-        gbc.gridy++;
-        gbc.weighty = 2;
-        this.add(new JLabel("<html><p>"+ p.getBroadcastinfo() +"</p></html>"), gbc);
-
-        gbc.gridy++;
-        gbc.weighty = 1;
-        this.add(new JLabel("Description:"), gbc);
-
-        gbc.gridy++;
-        gbc.weighty = 10;
-        this.add(new JLabel("<html><p>"+p.getDescription() + "</p></html>"), gbc);
+        stackPanel.add(ViewHelper.withPadding(ViewHelper.toLabel(p.getName(), getFont(), Font.BOLD, 1.5),20,10));
+        stackPanel.add(ViewHelper.withPadding(ViewHelper.toLabel("Brodcast info:", getFont(), Font.BOLD),0,10));
+        stackPanel.add(ViewHelper.withPadding(ViewHelper.toLabel(p.getBroadcastinfo(), getFont()),0,10,10,10));
+        stackPanel.add(ViewHelper.withPadding(ViewHelper.toLabel("Description:", getFont(), Font.BOLD),0,10));
+        stackPanel.add(ViewHelper.withPadding(ViewHelper.toLabel(p.getDescription(), getFont()),0,10,10,10));
     }
 }

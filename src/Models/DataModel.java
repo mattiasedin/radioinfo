@@ -17,10 +17,7 @@ import java.util.HashMap;
  */
 public abstract class DataModel {
 
-
     public abstract String UrlToImage();
-
-
 
     private ImageIcon icon;
 

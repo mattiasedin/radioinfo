@@ -1,7 +1,7 @@
 package Endpoint;
 
-import Exceptions.DataDoesNotMatchModelException;
-import Exceptions.InvalidUrlException;
+import Exceptions.*;
+import Models.DataModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,11 +12,10 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by mattias on 1/15/17.
  */
-public class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends SwingWorker<U, Integer> {
+public class GetDataListBackgroundWorker<T extends DataModel, U extends ArrayList<T>> extends SwingWorker<U, Integer> {
     private ActionListener listener;
     private String dataUri;
     private Exception failedException;
-
     private EndpointAPIReader<T> dr;
 
     public GetDataListBackgroundWorker(ActionListener listener, Class<T> typeParameterClass, String dataUri) {
@@ -28,17 +27,12 @@ public class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends Swin
     @SuppressWarnings("unchecked")
     @Override
     protected U doInBackground() {
-        try {
-            try {
-                ArrayList<T> dataListFromUri = dr.getDataListFromUri(dataUri);
-                return (U) dataListFromUri;
-            } catch (DataDoesNotMatchModelException | InvalidUrlException e) {
-                failedException = e;
-            }
-        }catch (Exception e) {
-            System.out.print("error");
+        ArrayList<T> dataListFromUri = getDataList();
+        if (dataListFromUri != null) {
+            return (U) dataListFromUri;
+        } else {
+            return null;
         }
-        return null;
     }
 
     protected void done() {
@@ -53,5 +47,20 @@ public class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends Swin
         }
     }
 
+    protected ArrayList<T> getDataList(String uri) {
+        try {
+            try {
+                return dr.getDataListFromUri(uri);
+            } catch (NodeInstantiationException | DataDoesNotMatchModelException | InvalidUrlException e) {
+                failedException = e;
+            }
+        } catch (Exception e) {
+            failedException = e;
+        }
+        return null;
+    }
 
+    protected ArrayList<T> getDataList() {
+        return getDataList(dataUri);
+    }
 }

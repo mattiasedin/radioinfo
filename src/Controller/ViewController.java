@@ -3,6 +3,7 @@ package Controller;
 import Endpoint.EndpointAPI;
 import Endpoint.GetDataBackgroundWorker;
 import Endpoint.GetDataListBackgroundWorker;
+import Endpoint.GetSchedulesBackgroundWorker;
 import Models.Channel;
 import Models.Program;
 import Models.Scheduledepisode;
@@ -14,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.prefs.Preferences;
 
 /**
@@ -57,9 +59,22 @@ public class ViewController {
         if (source instanceof String) {
             contentManager.changeViewTo(1, new ErrorView((String) source));
         } else {
-            TableView<Scheduledepisode> view = new TableView<Scheduledepisode>(Scheduledepisode.class, (ArrayList<Scheduledepisode>) actionEvent.getSource());
+            ArrayList<Scheduledepisode> data = (ArrayList<Scheduledepisode>) actionEvent.getSource();
+            TableView<Scheduledepisode> view = new TableView<Scheduledepisode>(Scheduledepisode.class, data);
             view.setOnListItemClickListener(onScheduleClicked);
             contentManager.changeViewTo(1, view);
+
+            Date currentTime = new Date();
+            int currentScheduleIndex = 0;
+            for (int i = 0; i < data.size(); i++) {
+                boolean hasStarted = data.get(i).getStarttimeutc().after(currentTime);
+                boolean hasEnded = data.get(i).getEndtimeutc().before(currentTime);
+                if (hasStarted && !hasEnded) {
+                    currentScheduleIndex = i;
+                    break;
+                }
+            }
+            view.scrollTo(currentScheduleIndex);
         }
     };
 
@@ -69,7 +84,8 @@ public class ViewController {
     private ActionListener onChannelClicked = actionEvent -> {
         contentManager.changeViewTo(1, new LoadingView());
         Channel c = (Channel) actionEvent.getSource();
-        new GetDataListBackgroundWorker<Scheduledepisode, ArrayList<Scheduledepisode>>(onScheduleDownloadComplete, Scheduledepisode.class, String.format(EndpointAPI.SCHEDULE, c.getId())).execute();
+        new GetSchedulesBackgroundWorker(onScheduleDownloadComplete, c.getId()).execute();
+        //new GetDataListBackgroundWorker<Scheduledepisode, ArrayList<Scheduledepisode>>(onScheduleDownloadComplete, Scheduledepisode.class, String.format(EndpointAPI.SCHEDULE, c.getId())).execute();
     };
 
 
@@ -108,7 +124,7 @@ public class ViewController {
                 createPopup("Preferences", new PreferencesView(onSettingsChanged, pref.getInt(NUM_UPDATE_INTERVAL, 5)));
                 break;
             case Menu.OPTIONS.about:
-                createPopup("About", new LoadingView());
+                createPopup("About", new AboutView());
                 break;
         }
     };
