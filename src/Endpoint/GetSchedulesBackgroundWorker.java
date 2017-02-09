@@ -20,7 +20,7 @@ public class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker<Sc
     }
 
     @Override
-    protected ArrayList getData(String url) throws Exception {
+    protected ArrayList<Scheduledepisode> getData(String url) throws Exception {
         ArrayList<Scheduledepisode> data = getReader().getDataListFromUri(url);
         if (data != null) {
 
