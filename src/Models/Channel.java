@@ -5,14 +5,14 @@ package Models;
  */
 
 @ApiModel(container = "channels", pagination = true)
-public class Channel extends DataModel {
+public class Channel extends IconViewModel {
     private int id;
     private String name;
     private String image;
 
 
     @Override
-    public String UrlToImage() {
+    public String getIconUrl() {
         return image;
     }
 

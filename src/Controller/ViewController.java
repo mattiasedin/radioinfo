@@ -1,9 +1,6 @@
 package Controller;
 
-import Endpoint.EndpointAPI;
-import Endpoint.GetDataBackgroundWorker;
-import Endpoint.GetDataListBackgroundWorker;
-import Endpoint.GetSchedulesBackgroundWorker;
+import Endpoint.*;
 import Models.Channel;
 import Models.Program;
 import Models.Scheduledepisode;
@@ -11,6 +8,7 @@ import Views.*;
 import Views.Menu;
 
 import javax.swing.*;
+import javax.xml.ws.Endpoint;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +25,9 @@ public class ViewController {
     private TripleSplitView contentManager;
     private final Preferences pref = Preferences.userNodeForPackage(ViewController.class);
 
-    private static final String NUM_UPDATE_INTERVAL = "update_interval";
+    private static final String NUM_UPDATE_INTERVAL_MINUTES_KEY = "update_interval";
+    private static final int UPDATE_INTERVAL_MINUTES_DEFAULT = 5;
+
 
     /**
      * Action called when program download is complete.
@@ -60,7 +60,7 @@ public class ViewController {
             contentManager.changeViewTo(1, new ErrorView((String) source));
         } else {
             ArrayList<Scheduledepisode> data = (ArrayList<Scheduledepisode>) actionEvent.getSource();
-            TableView<Scheduledepisode> view = new TableView<Scheduledepisode>(Scheduledepisode.class, data);
+            TableIconView<Scheduledepisode> view = new TableScheduleView(data);
             view.setOnListItemClickListener(onScheduleClicked);
             contentManager.changeViewTo(1, view);
 
@@ -96,23 +96,28 @@ public class ViewController {
         if (actionEvent.getSource() instanceof String) {
             contentManager.changeViewTo(0, new ErrorView((String) actionEvent.getSource()));
         } else {
-            TableView<Channel> view = new TableView<Channel>(Channel.class, (ArrayList<Channel>) actionEvent.getSource());
+            TableIconView<Channel> view = new TableIconView<Channel>(Channel.class, (ArrayList<Channel>) actionEvent.getSource());
             view.setOnListItemClickListener(onChannelClicked);
             contentManager.changeViewTo(0,view);
         }
     };
 
-
+    /**
+     * Action called when settings changed update interval value
+     */
     private ActionListener onSettingsChanged = actionEvent -> {
         if (actionEvent.getSource() instanceof Integer) {
             int interval = (int) actionEvent.getSource();
-            pref.putInt(NUM_UPDATE_INTERVAL, interval);
+            pref.putInt(NUM_UPDATE_INTERVAL_MINUTES_KEY, interval);
             timer.setDelay(interval*60000);
             timer.restart();
         }
 
     };
 
+    /**
+     * Action called when a menu item is clicked
+     */
     private ActionListener onMenuClicked = actionEvent -> {
         int opt = (int) actionEvent.getSource();
 
@@ -121,7 +126,7 @@ public class ViewController {
                 timer.restart();
                 break;
             case Menu.OPTIONS.preferences:
-                createPopup("Preferences", new PreferencesView(onSettingsChanged, pref.getInt(NUM_UPDATE_INTERVAL, 5)));
+                createPopup("Preferences", new PreferencesView(onSettingsChanged, pref.getInt(NUM_UPDATE_INTERVAL_MINUTES_KEY, 5)));
                 break;
             case Menu.OPTIONS.about:
                 createPopup("About", new AboutView());
@@ -130,7 +135,10 @@ public class ViewController {
     };
 
 
-
+    /**
+     * Constructor for view controller. Handles interaction changes and changing views acording to user input.
+     * @param frame the frame to draw the views on.
+     */
     public ViewController(final JFrame frame) {
 
         frame.setJMenuBar(new Menu(onMenuClicked));
@@ -138,12 +146,8 @@ public class ViewController {
         JPanel mainPanel = new JPanel(new BorderLayout());
         frame.add(mainPanel);
 
-
         contentManager = new TripleSplitView();
         mainPanel.add(contentManager, BorderLayout.CENTER);
-
-        //contentManager.changeViewTo(0, new LoadingView());
-        //doUpdateChannels();
 
         JButton btnUpdate = new JButton("Update");
         btnUpdate.addActionListener(new ActionListener() {
@@ -154,14 +158,16 @@ public class ViewController {
         frame.add(btnUpdate, BorderLayout.PAGE_END);
 
 
-        timer = new Timer(pref.getInt(NUM_UPDATE_INTERVAL,5)*60000, actionEvent -> {
+        timer = new Timer(pref.getInt(NUM_UPDATE_INTERVAL_MINUTES_KEY, UPDATE_INTERVAL_MINUTES_DEFAULT)*60000, actionEvent -> {
             doUpdateChannels();
         });
         timer.setInitialDelay(0);
         timer.start();
     }
 
-
+    /**
+     * Initiates new download for Channels and sets the view to loading state.
+     */
     private void doUpdateChannels () {
         contentManager.changeViewTo(0, new LoadingView());
         contentManager.clear(1);
@@ -169,6 +175,12 @@ public class ViewController {
         new GetDataListBackgroundWorker<Channel, ArrayList<Channel>>(onChannelDownloadComplete, Channel.class, EndpointAPI.CHANNELS).execute();
     }
 
+    /**
+     * Creates a popup window with corresponding view as content.
+     * @param title the title for the view
+     * @param view the content of the popup
+     * @return the created popup frame
+     */
     private JFrame createPopup(String title, JPanel view) {
         JFrame frame = new JFrame (title);
         frame.getContentPane().add(view);

@@ -1,5 +1,5 @@
 package Endpoint;
-import Exceptions.DataDoesNotMatchModelException;
+import Exceptions.ModelParseException;
 import Exceptions.NodeInstantiationException;
 import Models.ApiModelData;
 import org.w3c.dom.Node;
@@ -44,7 +44,7 @@ public class NodeReader<T> {
 
 
     /*Instansiate object from generic type*/
-    public T nodeToObject(Node currentNode) throws NodeInstantiationException, DataDoesNotMatchModelException {
+    public T nodeToObject(Node currentNode) throws NodeInstantiationException, ModelParseException {
 
         T dataElement = null;
         try {
@@ -112,7 +112,7 @@ public class NodeReader<T> {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException  e) {
             throw new NodeInstantiationException(e.getMessage());
         } catch (ParseException ep) {
-            throw new DataDoesNotMatchModelException(ep.getMessage());
+            throw new ModelParseException(ep.getMessage());
         }
         return dataElement;
     }
@@ -127,11 +127,11 @@ public class NodeReader<T> {
         return currentNode;
     }
 
-    public ArrayList<T> getObjectListFromNode(Node n, String listContainerName) throws DataDoesNotMatchModelException, NodeInstantiationException {
+    public ArrayList<T> getObjectListFromNode(Node n, String listContainerName) throws ModelParseException, NodeInstantiationException {
         Node nodeListContainer = getNodeWithName(n, listContainerName);
 
         if (nodeListContainer == null)
-            throw new DataDoesNotMatchModelException("Payload does not contain model: "+listContainerName);
+            throw new ModelParseException("Payload does not contain model: "+listContainerName);
 
         NodeList nodeDataList = nodeListContainer.getChildNodes();
 

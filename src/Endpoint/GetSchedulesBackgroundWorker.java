@@ -1,17 +1,12 @@
 package Endpoint;
 
-import Exceptions.DataDoesNotMatchModelException;
-import Exceptions.InvalidUrlException;
-import Exceptions.NodeInstantiationException;
 import Models.Scheduledepisode;
 
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by mattias on 2/8/17.

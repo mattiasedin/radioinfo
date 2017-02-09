@@ -4,7 +4,7 @@ package Models;
  * Created by mattias on 1/11/17.
  */
 @ApiModel(container = "program")
-public class Program extends DataModel {
+public class Program extends IconViewModel {
     private int id;
     private String name;
     private String broadcastinfo;
@@ -13,7 +13,7 @@ public class Program extends DataModel {
 
 
     @Override
-    public String UrlToImage() {
+    public String getIconUrl() {
         return programimage;
     }
 

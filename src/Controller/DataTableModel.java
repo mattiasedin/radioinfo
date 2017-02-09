@@ -1,6 +1,6 @@
 package Controller;
 
-import Models.DataModel;
+import Models.IconViewModel;
 import Models.TableDisplay;
 
 import javax.swing.*;
@@ -13,70 +13,119 @@ import java.util.Stack;
 
 /**
  * Created by mattias on 1/11/17.
+ *
+ * Table model for rendering a table with data structure defined by model with propperly defined TableDisplay annotation.
+ * The columns defined by the TableDisplay interface as visible will be shown in the table.
  */
-public class DataTableModel<T extends DataModel> extends AbstractTableModel {
-    ArrayList<T> dataList;
-    private final Class<T> typeParameterClass;
-    Method[] getMethods;
+public class DataTableModel<T extends IconViewModel> extends AbstractTableModel {
+    private ArrayList<T> dataList;
+    private final Method[] getMethods;
+    private final int iconSize;
 
-
-    public DataTableModel(Class<T> typeParameterClass) {
-        this.typeParameterClass = typeParameterClass;
+    /**
+     * Constructor for the table model.
+     * @param typeParameterClass the typed class to render as table. This class has to implement the TableDisplay
+     *                           annotation properly. See the documentation fo TableDisplay interface for further
+     *                           information and usage.
+     * @param iconSize prefered size of the icon. The table will resize the icon to fit this value by a square.
+     */
+    private DataTableModel(Class<T> typeParameterClass, int iconSize) {
         dataList = new ArrayList<T>();
+        this.iconSize = iconSize;
 
-        ArrayList<Method>  getMethodsTemp = new ArrayList<>();
+        ArrayList<Method> allVisibleMethods = getVisibleMethods(typeParameterClass);
+
+        Method[] methods = new Method[allVisibleMethods.size()];
+        allVisibleMethods.toArray(methods);
+        getMethods = doSelectionSort(methods);
+
+    }
+
+    /**
+     *Constructor for the table model.
+     * @param typeParameterClass the typed class to render as table. This class has to implement the TableDisplay
+     *                           annotation properly. See the documentation fo TableDisplay interface for further
+     *                           information and usage.
+     * @param iconSize prefered size of the icon. The table will resize the icon to fit this value by a square.
+     * @param channels the list of data to show
+     */
+    public DataTableModel(Class<T> typeParameterClass, int iconSize, ArrayList<T> channels) {
+        this(typeParameterClass, iconSize);
+        this.dataList = channels;
+    }
+
+    /**
+     * Gets the getters from the typed class. The methods that start with "get" and has no parameters and has the
+     * annotation TableDisplay and is market as visible will be returned from this method.
+     * @param typeParameterClass the typed class to get methods from.
+     * @return getter for the typed class which are marked as visible.
+     */
+    private ArrayList<Method> getVisibleMethods(Class<T> typeParameterClass) {
+        ArrayList<Method>  allVisibleMethods = new ArrayList<>();
+
+        Class<?> c;
 
         try {
-            Class<?> c = Class.forName( typeParameterClass.getName() );
-
-            Method[] methods = c.getMethods();
-
-            String[] displayMethods = new String[0];
-
-            for (Method m: methods) {
-
-                if (m.isAnnotationPresent(TableDisplay.class)) {
-                    Annotation annotation = m.getAnnotation(TableDisplay.class);
-                    TableDisplay tableDisplay = (TableDisplay) annotation;
-
-                    if (tableDisplay.visible()) {
-                        getMethodsTemp.add(m);
-                    }
-                }
-            }
+            c = Class.forName( typeParameterClass.getName() );
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            return allVisibleMethods;
         }
 
-        Method[] tempListOrdered = new Method[getMethodsTemp.size()];
-        Stack<Method> tempListUnOrdered = new Stack<>();
-        for (Method m : getMethodsTemp) {
-            if (m.isAnnotationPresent(TableDisplay.class)) {
+        Method[] methods = c.getMethods();
+
+        for (Method m: methods) {
+
+            if (m.isAnnotationPresent(TableDisplay.class) && m.getParameterCount() == 0 && m.getName().startsWith("get")) {
                 Annotation annotation = m.getAnnotation(TableDisplay.class);
                 TableDisplay tableDisplay = (TableDisplay) annotation;
 
-                if (tableDisplay.order() >= 0) {
-                    tempListOrdered[tableDisplay.order()] = m;
-                } else {
-                    tempListUnOrdered.push(m);
+                if (tableDisplay.visible()) {
+                    allVisibleMethods.add(m);
                 }
             }
         }
-
-        for (int i = 0; i < getMethodsTemp.size(); i++) {
-            if (tempListOrdered[i] == null) {
-                tempListOrdered[i] = tempListUnOrdered.pop();
-            }
-        }
-
-
-
-        getMethods = tempListOrdered;
-
+        return allVisibleMethods;
     }
-    public DataTableModel(Class<T> typeParameterClass, ArrayList<T> channels) {
-        this(typeParameterClass);
-        this.dataList = channels;
+
+    /**
+     * Sorts the methods by specified order
+     * @param arr unsorted list to sort
+     * @return the sorted list
+     */
+    private Method[] doSelectionSort(Method[] arr){
+
+        for (int i = 0; i < arr.length - 1; i++)
+        {
+            int index = i;
+            for (int j = i + 1; j < arr.length; j++)
+                if (arr[j].getAnnotation(TableDisplay.class).order() < arr[index].getAnnotation(TableDisplay.class).order())
+                    index = j;
+
+            Method smallerNumber = arr[index];
+            arr[index] = arr[i];
+            arr[i] = smallerNumber;
+        }
+        return arr;
+    }
+
+
+
+    /**
+     * Gets the model element at specific row
+     * @param row the row index
+     * @return the element at the index
+     */
+    public T getElementAtRow(int row) {
+        return dataList.get(row);
+    }
+
+    /**
+     * Sets the table data
+     * @param dataList the list of data
+     */
+    public void setDataList(ArrayList<T> dataList) {
+        this.dataList = dataList;
+        fireTableDataChanged();
     }
 
     @Override
@@ -93,45 +142,32 @@ public class DataTableModel<T extends DataModel> extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         T o = dataList.get(rowIndex);
 
-        Object results = null;
+        if (getMethods[columnIndex].getReturnType() == ImageIcon.class) {
+            IconViewModel model = (IconViewModel) o;
+            model.setIconSize(iconSize);
+            model.setIconDownloadedListener(actionEvent -> {
+                fireTableCellUpdated(rowIndex, columnIndex);
+            });
+        }
 
+        Object results = null;
         try {
-            if (getMethods[columnIndex].getReturnType() == ImageIcon.class) {
-                o.setDataChangedListener(actionEvent -> {
-                    fireTableCellUpdated(rowIndex, columnIndex);
-                });
-            }
             results = getMethods[columnIndex].invoke(o);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            results = "Error accessing data";
         }
-        finally {
-            return results;
-        }
+
+        return results;
     }
 
     @Override
     public String getColumnName(int columnIndex) {
-
         if (getMethods[columnIndex].isAnnotationPresent(TableDisplay.class)) {
             Annotation annotation = getMethods[columnIndex].getAnnotation(TableDisplay.class);
             TableDisplay tableDisplay = (TableDisplay) annotation;
-
-            if (tableDisplay.name() != null) {
-                return tableDisplay.name();
-            }
+            return tableDisplay.name();
         }
         return getMethods[columnIndex].getName().replace("get", "").toLowerCase();
-    }
-
-    public T getOfferAtRow(int row) {
-        return dataList.get(row);
-    }
-
-    public void setDataList(ArrayList<T> dataList) {
-        this.dataList = dataList;
     }
 
     @Override
@@ -139,7 +175,4 @@ public class DataTableModel<T extends DataModel> extends AbstractTableModel {
     {
         return getMethods[column].getReturnType();
     }
-
-
-
 }

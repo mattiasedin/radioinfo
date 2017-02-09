@@ -6,20 +6,31 @@ import java.util.Date;
 
 /**
  * Created by mattias on 1/12/17.
+ *
+ * Table cell renderer that renders the cells with dates with new format
  */
 public class DateCellRenderer extends DefaultTableCellRenderer {
-    public DateCellRenderer() {
+
+    private final String format;
+
+    /**
+     * Constructor for date renderer
+     * @param format the format to render date to.
+     */
+    public DateCellRenderer(String format) {
         super();
+        this.format = format;
     }
 
     @Override
     public void setValue(final Object value) {
-        final SimpleDateFormat sdf = new SimpleDateFormat("HH:ss");
-
-        String strValue = "";
+        final SimpleDateFormat sdf = new SimpleDateFormat(format);
         if(value != null && value instanceof Date){
-            strValue = sdf.format(value);
+            String strValue = sdf.format(value);
+            super.setText(strValue);
         }
-        super.setText(strValue);
+        else {
+            super.setText(value.toString());
+        }
     }
 }

@@ -6,7 +6,7 @@ import java.util.Date;
  * Created by mattias on 1/11/17.
  */
 @ApiModel(container = "schedule", pagination = true)
-public class Scheduledepisode extends DataModel {
+public class Scheduledepisode extends IconViewModel {
 
     private int episodeid;
     private String title;
@@ -16,7 +16,7 @@ public class Scheduledepisode extends DataModel {
     private String imageurl;
 
     @Override
-    public String UrlToImage() {
+    public String getIconUrl() {
         return imageurl;
     }
 

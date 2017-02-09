@@ -1,6 +1,7 @@
 package Endpoint;
 
-import Exceptions.DataDoesNotMatchModelException;
+import Exceptions.InternetConnectionException;
+import Exceptions.ModelParseException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,8 +27,8 @@ public class GetImageBackgroundWorker extends SwingWorker<Image, Integer> {
     @Override
     protected Image doInBackground() throws Exception {
         try {
-            return EndpointImageDownloader.getImageFromUri(dataUri);
-        } catch (DataDoesNotMatchModelException | MalformedURLException e) {
+            return EndpointAPIReader.getImageFromUri(dataUri);
+        } catch (InternetConnectionException | MalformedURLException e) {
             failed = true;
         }
         return null;

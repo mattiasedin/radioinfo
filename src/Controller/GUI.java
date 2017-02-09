@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
 
 /**
  * Created by mattias on 2016-01-07.
+ *
+ * Graphical user interface for the application. Creates the controller to keep track of the content of the GUI and
+ * user input.
  */
 public class GUI extends JFrame {
 

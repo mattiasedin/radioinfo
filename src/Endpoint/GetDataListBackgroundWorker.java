@@ -1,18 +1,18 @@
 package Endpoint;
 
 import Exceptions.*;
-import Models.DataModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by mattias on 1/15/17.
  */
-public class GetDataListBackgroundWorker<T extends DataModel, U extends ArrayList<T>> extends SwingWorker<U, Integer> {
+public class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends SwingWorker<U, Integer> {
     private ActionListener listener;
     private String dataUri;
     private Exception failedException;
@@ -49,12 +49,8 @@ public class GetDataListBackgroundWorker<T extends DataModel, U extends ArrayLis
 
     protected ArrayList<T> getDataList(String uri) {
         try {
-            try {
-                return dr.getDataListFromUri(uri);
-            } catch (NodeInstantiationException | DataDoesNotMatchModelException | InvalidUrlException e) {
-                failedException = e;
-            }
-        } catch (Exception e) {
+            return dr.getDataListFromUri(uri);
+        } catch (XMLParseExeption | InternetConnectionException | ModelParseException | MalformedURLException | NodeInstantiationException e ) {
             failedException = e;
         }
         return null;

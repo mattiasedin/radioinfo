@@ -14,8 +14,9 @@ public @interface TableDisplay {
 
     public boolean visible() default true;
 
-    public int order() default -1;
+    public int order() default 99;
 
-    public String name() default "Unset";
+    public String name() default "";
 
+    public boolean isImage() default false;
 }

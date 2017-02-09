@@ -5,6 +5,8 @@ import java.awt.event.MouseListener;
 
 /**
  * Created by mattias on 2016-01-08.
+ *
+ * Simplified MouseListener where only the clicked event has to be implemented.
  */
 public abstract class MouseClickListener implements MouseListener {
 

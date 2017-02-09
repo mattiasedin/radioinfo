@@ -1,17 +1,17 @@
 package Endpoint;
 
 import Exceptions.*;
-import Models.DataModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by mattias on 1/12/17.
  */
-public class GetDataBackgroundWorker<T extends DataModel> extends SwingWorker<T, Integer> {
+public class GetDataBackgroundWorker<T> extends SwingWorker<T, Integer> {
     private ActionListener listener;
     private String dataUri;
     private Exception failedException;
@@ -26,13 +26,13 @@ public class GetDataBackgroundWorker<T extends DataModel> extends SwingWorker<T,
 
     @SuppressWarnings("unchecked")
     protected T doInBackground() {
+        T obj = null;
         try {
-            T obj = dr.getDataFromUri(dataUri);
-            return obj;
-        } catch (NodeInstantiationException | DataDoesNotMatchModelException | InvalidUrlException e) {
+            obj = dr.getDataFromUri(dataUri);
+        } catch (XMLParseExeption | InternetConnectionException | MalformedURLException | ModelParseException | NodeInstantiationException e) {
             failedException = e;
         }
-        return null;
+        return obj;
     }
 
     protected void done() {
