@@ -12,51 +12,21 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by mattias on 1/15/17.
  */
-public class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends SwingWorker<U, Integer> {
-    private ActionListener listener;
-    private String dataUri;
-    private Exception failedException;
+public class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends AbstractBackgroundWorker<U> {
     private EndpointAPIReader<T> dr;
 
-    public GetDataListBackgroundWorker(ActionListener listener, Class<T> typeParameterClass, String dataUri) {
-        this.listener = listener;
-        this.dataUri = dataUri;
+    public GetDataListBackgroundWorker(ActionListener listener, String dataUri, Class<T> typeParameterClass) {
+        super(listener, dataUri);
         this.dr = new EndpointAPIReader<T>(typeParameterClass);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected U doInBackground() {
-        ArrayList<T> dataListFromUri = getDataList();
-        if (dataListFromUri != null) {
-            return (U) dataListFromUri;
-        } else {
-            return null;
-        }
+    protected U getData(String url) throws Exception {
+        return (U) dr.getDataListFromUri(url);
     }
 
-    protected void done() {
-        if (failedException == null) {
-            try {
-                listener.actionPerformed(new ActionEvent(get(), ActionEvent.ACTION_PERFORMED, "Ok"));
-            } catch (InterruptedException | ExecutionException e) {
-                listener.actionPerformed(new ActionEvent("The operation was canceled, please try again", ActionEvent.ACTION_PERFORMED, "Error"));
-            }
-        } else {
-            listener.actionPerformed(new ActionEvent(failedException.getMessage(), ActionEvent.ACTION_PERFORMED, "Error"));
-        }
-    }
-
-    protected ArrayList<T> getDataList(String uri) {
-        try {
-            return dr.getDataListFromUri(uri);
-        } catch (XMLParseExeption | InternetConnectionException | ModelParseException | MalformedURLException | NodeInstantiationException e ) {
-            failedException = e;
-        }
-        return null;
-    }
-
-    protected ArrayList<T> getDataList() {
-        return getDataList(dataUri);
+    public EndpointAPIReader<T> getReader() {
+        return dr;
     }
 }

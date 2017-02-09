@@ -48,7 +48,7 @@ public class ViewController {
         Scheduledepisode source = (Scheduledepisode) actionEvent.getSource();
         contentManager.changeViewTo(2, new LoadingView());
         Program p = source.getProgram();
-        new GetDataBackgroundWorker<Program>(onProgramDownloaded, Program.class, String.format(EndpointAPI.PROGRAM, p.getId())).execute();
+        new GetDataBackgroundWorker<Program>(onProgramDownloaded, String.format(EndpointAPI.PROGRAM, p.getId()), Program.class).execute();
     };
 
     /**
@@ -172,7 +172,7 @@ public class ViewController {
         contentManager.changeViewTo(0, new LoadingView());
         contentManager.clear(1);
         contentManager.clear(2);
-        new GetDataListBackgroundWorker<Channel, ArrayList<Channel>>(onChannelDownloadComplete, Channel.class, EndpointAPI.CHANNELS).execute();
+        new GetDataListBackgroundWorker<Channel, ArrayList<Channel>>(onChannelDownloadComplete, EndpointAPI.CHANNELS, Channel.class).execute();
     }
 
     /**

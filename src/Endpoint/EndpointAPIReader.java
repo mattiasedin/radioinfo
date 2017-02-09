@@ -166,8 +166,8 @@ public class EndpointAPIReader<T> {
      * Downloads image from url.
      * @param uri the url to the image
      * @return the image.
-     * @throws ModelParseException if the
-     * @throws MalformedURLException
+     * @throws MalformedURLException if the url is not in correct format
+     * @throws InternetConnectionException if the connection could not be made
      */
     public static Image getImageFromUri(String uri) throws InternetConnectionException, MalformedURLException {
         URL url = new URL(uri);

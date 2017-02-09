@@ -15,13 +15,13 @@ public class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker<Sc
     private int channelId;
 
     public GetSchedulesBackgroundWorker(ActionListener listener, int channelId) {
-        super(listener, Scheduledepisode.class, String.format(EndpointAPI.SCHEDULE, channelId));
+        super(listener, String.format(EndpointAPI.SCHEDULE, channelId), Scheduledepisode.class);
         this.channelId = channelId;
     }
 
     @Override
-    protected ArrayList<Scheduledepisode> doInBackground() {
-        ArrayList<Scheduledepisode> data = getDataList();
+    protected ArrayList getData(String url) throws Exception {
+        ArrayList<Scheduledepisode> data = getReader().getDataListFromUri(url);
         if (data != null) {
 
             Scheduledepisode currentEpisode = getEpisodeOnTime(new Date(), data);
@@ -40,13 +40,13 @@ public class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker<Sc
 
             if (firstEpisode == null) {
                 String pastStr = formatter.format(datePast).toString();
-                ArrayList<Scheduledepisode> dataBefore = getDataList(String.format(EndpointAPI.SCHEDULE_FOR_TIME, channelId, pastStr));
+                ArrayList<Scheduledepisode> dataBefore = getReader().getDataListFromUri(String.format(EndpointAPI.SCHEDULE_FOR_TIME, channelId, pastStr));
                 data.addAll(0, dataBefore);
             }
 
             if (lastEpisode == null) {
                 String futureStr = formatter.format(dateFuture).toString();
-                ArrayList<Scheduledepisode> dataAfter = getDataList(String.format(EndpointAPI.SCHEDULE_FOR_TIME, channelId, futureStr));
+                ArrayList<Scheduledepisode> dataAfter = getReader().getDataListFromUri(String.format(EndpointAPI.SCHEDULE_FOR_TIME, channelId, futureStr));
                 data.addAll(dataAfter);
             }
             return data;
