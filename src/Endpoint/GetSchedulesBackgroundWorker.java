@@ -14,6 +14,11 @@ import java.util.Date;
 public class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker<Scheduledepisode, ArrayList<Scheduledepisode>> {
     private int channelId;
 
+    /**
+     * Constructor for the class
+     * @param listener listener for the which will be called once operation is complete.
+     * @see Models.ApiModel
+     */
     public GetSchedulesBackgroundWorker(ActionListener listener, int channelId) {
         super(listener, String.format(EndpointAPI.SCHEDULE, channelId), Scheduledepisode.class);
         this.channelId = channelId;
@@ -39,13 +44,13 @@ public class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker<Sc
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
             if (firstEpisode == null) {
-                String pastStr = formatter.format(datePast).toString();
+                String pastStr = formatter.format(datePast);
                 ArrayList<Scheduledepisode> dataBefore = getReader().getDataListFromUri(String.format(EndpointAPI.SCHEDULE_FOR_TIME, channelId, pastStr));
                 data.addAll(0, dataBefore);
             }
 
             if (lastEpisode == null) {
-                String futureStr = formatter.format(dateFuture).toString();
+                String futureStr = formatter.format(dateFuture);
                 ArrayList<Scheduledepisode> dataAfter = getReader().getDataListFromUri(String.format(EndpointAPI.SCHEDULE_FOR_TIME, channelId, futureStr));
                 data.addAll(dataAfter);
             }
@@ -56,13 +61,19 @@ public class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker<Sc
         }
     }
 
+    /**
+     * Iterates through the list of episodes to find if there exist one with specific time in interval
+     * @param currentTime the time to check if exist
+     * @param list the list to check in.
+     * @return the episode in which has the specific time in its interval.
+     */
     private Scheduledepisode getEpisodeOnTime(Date currentTime, ArrayList<Scheduledepisode> list) {
         Scheduledepisode currentEpisode = null;
-        for (int i = 0; i < list.size(); i++) {
-            boolean hasStarted = list.get(i).getStarttimeutc().after(currentTime);
-            boolean hasEnded = list.get(i).getEndtimeutc().before(currentTime);
+        for (Scheduledepisode episode : list) {
+            boolean hasStarted = episode.getStarttimeutc().after(currentTime);
+            boolean hasEnded = episode.getEndtimeutc().before(currentTime);
             if (hasStarted && !hasEnded) {
-                currentEpisode = list.get(i);
+                currentEpisode = episode;
                 break;
             }
         }

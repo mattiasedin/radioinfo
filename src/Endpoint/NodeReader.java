@@ -21,7 +21,6 @@ import java.util.TimeZone;
 public class NodeReader<T> {
 
     private final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
     private Class<T> classType;
     private SimpleDateFormat formatter;
 

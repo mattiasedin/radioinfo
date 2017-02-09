@@ -1,19 +1,20 @@
 package Endpoint;
 
-import Exceptions.InternetConnectionException;
-import Exceptions.ModelParseException;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by mattias on 2016-01-08.
+ * <p>
+ * Background worker for downloading an image from a internet url
  */
 public class GetImageBackgroundWorker extends AbstractBackgroundWorker<Image> {
 
+    /**
+     * Constructor for the class
+     * @param listener listener for the which will be called once operation is complete.
+     * @param dataUri url to download data from.
+     */
     public GetImageBackgroundWorker(ActionListener listener, String dataUri) {
         super(listener, dataUri);
     }

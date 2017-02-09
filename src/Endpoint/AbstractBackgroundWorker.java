@@ -1,30 +1,35 @@
 package Endpoint;
 
-import Exceptions.InternetConnectionException;
-import Exceptions.ModelParseException;
-import Exceptions.NodeInstantiationException;
-import Exceptions.XMLParseExeption;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by mattias on 2/9/17.
+ *
+ * Arbritary swing background worker that calls an action listener after the process is complete.
  */
 public abstract class AbstractBackgroundWorker<T> extends SwingWorker<T, Integer> {
     private ActionListener listener;
     private String dataUri;
     private Exception failedException;
 
+    /**
+     * Constructor for the class
+     * @param listener listener for the which will be called once operation is complete.
+     * @param dataUri url to download data from.
+     */
     public AbstractBackgroundWorker(ActionListener listener, String dataUri) {
         this.listener = listener;
         this.dataUri = dataUri;
     }
 
+    /**
+     * Should not be overriden in implementing class. Override the getData() method instead this mathod handles the expetion
+     * callback if something goes wrong in the operation.
+     * @return the downloaded data
+     */
     @Override
     protected T doInBackground() {
         T obj = null;
@@ -49,5 +54,12 @@ public abstract class AbstractBackgroundWorker<T> extends SwingWorker<T, Integer
         }
     }
 
+    /**
+     * Called from the main working thread and executes the download. This method should be implemented for the main
+     * operation not implement the doInBackground() function.
+     * @param url the url to download the data from
+     * @return the donwloaded data
+     * @throws Exception if something goes wrong while doing the operation. Let the wrapper class handle the exception.
+     */
     protected abstract T getData(String url) throws Exception;
 }
