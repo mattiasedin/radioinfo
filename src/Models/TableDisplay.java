@@ -7,16 +7,23 @@ import java.lang.annotation.Target;
 
 /**
  * Created by mattias on 1/11/17.
+ * <p>
+ * The annotation interface for displaying a model in table. If implement this interface on the model it will be visible
+ * in a JTable.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD) //can use in method only.
 public @interface TableDisplay {
 
-    public boolean visible() default true;
-
+    /**
+     * Gets the preferred column index.
+     * @return the index.
+     */
     public int order() default 99;
 
-    public String name() default "";
-
-    public boolean isImage() default false;
+    /**
+     * Gets the column name for this value.
+     * @return the name.
+     */
+    public String columnName();
 }

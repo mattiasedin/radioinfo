@@ -4,6 +4,9 @@ import java.util.Date;
 
 /**
  * Created by mattias on 1/11/17.
+ * <p>
+ * The schedulepisode model which is in list format in the API. Therefore the container has a different columnName than the
+ * model itself.
  */
 @ApiModel(container = "schedule", pagination = true)
 public class Scheduledepisode extends IconViewModel {
@@ -20,32 +23,25 @@ public class Scheduledepisode extends IconViewModel {
         return imageurl;
     }
 
-    @TableDisplay(visible = false)
-    public int getEpisodeid() {
-        return episodeid;
-    }
-
-    @TableDisplay(visible = true, order = 1, name = "Title")
+    @TableDisplay(order = 1, columnName = "Title")
     public String getTitle() {
         return title;
     }
-
-    @TableDisplay(visible = true, order = 2, name = "Start")
+    @TableDisplay(order = 2, columnName = "Start")
     public Date getStarttimeutc() {
         return starttimeutc;
     }
-
-    @TableDisplay(visible = true, order = 3, name = "End")
+    @TableDisplay(order = 3, columnName = "End")
     public Date getEndtimeutc() {
         return endtimeutc;
     }
 
-    @TableDisplay(visible = false)
+    public int getEpisodeid() {
+        return episodeid;
+    }
     public Program getProgram() {
         return program;
     }
-
-    @TableDisplay(visible = false)
     public String getImageurl() {
         return imageurl;
     }

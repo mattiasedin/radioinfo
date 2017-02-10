@@ -1,7 +1,9 @@
 package Models;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Created by mattias on 1/18/17.
@@ -11,6 +13,7 @@ import java.lang.annotation.RetentionPolicy;
  * the model.
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD) //can use in method only.
 public @interface ApiModelData {
 
     /**
@@ -20,8 +23,8 @@ public @interface ApiModelData {
     public CONTENT_TYPES type();
 
     /**
-     * The api element or attribute name in the model
-     * @return the name of the value
+     * The api element or attribute columnName in the model
+     * @return the columnName of the value
      */
     public String name();
 

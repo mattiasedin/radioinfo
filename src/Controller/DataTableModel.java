@@ -9,7 +9,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Stack;
 
 /**
  * Created by mattias on 1/11/17.
@@ -76,12 +75,7 @@ public class DataTableModel<T extends IconViewModel> extends AbstractTableModel 
         for (Method m: methods) {
 
             if (m.isAnnotationPresent(TableDisplay.class) && m.getParameterCount() == 0 && m.getName().startsWith("get")) {
-                Annotation annotation = m.getAnnotation(TableDisplay.class);
-                TableDisplay tableDisplay = (TableDisplay) annotation;
-
-                if (tableDisplay.visible()) {
-                    allVisibleMethods.add(m);
-                }
+                allVisibleMethods.add(m);
             }
         }
         return allVisibleMethods;
@@ -165,7 +159,7 @@ public class DataTableModel<T extends IconViewModel> extends AbstractTableModel 
         if (getMethods[columnIndex].isAnnotationPresent(TableDisplay.class)) {
             Annotation annotation = getMethods[columnIndex].getAnnotation(TableDisplay.class);
             TableDisplay tableDisplay = (TableDisplay) annotation;
-            return tableDisplay.name();
+            return tableDisplay.columnName();
         }
         return getMethods[columnIndex].getName().replace("get", "").toLowerCase();
     }

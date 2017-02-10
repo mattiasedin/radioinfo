@@ -1,7 +1,9 @@
 package Models;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Created by mattias on 1/18/17.
@@ -10,13 +12,14 @@ import java.lang.annotation.RetentionPolicy;
  * as a model wrapper for telling the API-readers hos to parse the api data to typed java objects.
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE) //can use in class only.
 public @interface ApiModel {
 
     /**
-     * The model container element name. This method gets the exact name of the model data in the api. The parser can
-     * then traverse the api to find a element with this given name. This could also point to the specific element in
+     * The model container element columnName. This method gets the exact columnName of the model data in the api. The parser can
+     * then traverse the api to find a element with this given columnName. This could also point to the specific element in
      * the api data if the data does not contain multiple values.
-     * @return the container name for the model in the api
+     * @return the container columnName for the model in the api
      * @see Endpoint.NodeReader
      * @see Endpoint.EndpointAPIReader
      */

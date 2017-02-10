@@ -17,24 +17,20 @@ public class Program extends IconViewModel {
         return programimage;
     }
 
-
-    @TableDisplay(visible = false)
-    public String getBroadcastinfo() {
-        return broadcastinfo;
-    }
-    @TableDisplay(visible = false)
-    public String getProgramimage() {
-        return programimage;
-    }
-    @TableDisplay(visible = false)
-    public int getId() {
-        return id;
-    }
-    @TableDisplay(visible = true)
+    @TableDisplay(columnName = "Program")
     public String getName() {
         return name;
     }
-    @TableDisplay(visible = false)
+
+    public String getBroadcastinfo() {
+        return broadcastinfo;
+    }
+    public String getProgramimage() {
+        return programimage;
+    }
+    public int getId() {
+        return id;
+    }
     public String getDescription() {
         return description;
     }
@@ -51,7 +47,7 @@ public class Program extends IconViewModel {
     public void setId(int id) {
         this.id = id;
     }
-    @ApiModelData(type = ApiModelData.CONTENT_TYPES.attribute, name = "name")
+    @ApiModelData(type = ApiModelData.CONTENT_TYPES.attribute, name = "columnName")
     public void setName(String name) {
         this.name = name;
     }

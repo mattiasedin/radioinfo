@@ -58,9 +58,9 @@ public class NodeReader<T> {
     }
 
     /**
-     * Finds a specific node in the children by name.
+     * Finds a specific node in the children by columnName.
      * @param parentNode the node to search in.
-     * @param nameToFind case-insensitive search name.
+     * @param nameToFind case-insensitive search columnName.
      * @return the node if found, else null.
      */
     public static Node findNodeByNameInChilds(Node parentNode, String nameToFind) {

@@ -2,6 +2,9 @@ package Models;
 
 /**
  * Created by mattias on 1/18/17.
+ * <p>
+ * Pagination class for the SR API. This class represent the the pagination behaviour of the api. Some api calls is
+ * divided in mutliple calls described in this class.
  */
 @ApiModel(container = "pagination")
 public class Pagination {
@@ -9,9 +12,12 @@ public class Pagination {
     private int size;
     private String nextpage;
     private int totalpages;
-
     private int totalhits;
 
+    /**
+     * Check if current pagination has a next page.
+     * @return true if there exist a next page, else false.
+     */
     public boolean hasNextPage() {
         return page < totalpages;
     }
