@@ -2,6 +2,8 @@ package Models;
 
 /**
  * Created by mattias on 1/11/17.
+ * <p>
+ * 
  */
 
 @ApiModel(container = "channels", pagination = true)

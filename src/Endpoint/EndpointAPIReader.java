@@ -94,17 +94,6 @@ public class EndpointAPIReader<T> {
     /**
      * Donwloads the data from internet using http connection and converts to the specified type.
      * @param uri the url to download the data from.
-     * @return downloaded object if typed class extends ApiModel and has no pagination else null
-     * @throws ModelInstantiationException if the typed class have errors in form of access violation or not implementing the interfaces
-     * @throws ModelParseException if the data does not match the model in any way
-     * @throws InvalidUrlException if the connection to the specified url could not be made
-     * @see ApiModel
-     */
-
-
-    /**
-     * Donwloads the data from internet using http connection and converts to the specified type.
-     * @param uri the url to download the data from.
      * @return downloaded object if typed class exte
      * @throws XMLParseExeption if the downloaded object is not a type of xml
      * @throws InternetConnectionException if there is no internet connection
