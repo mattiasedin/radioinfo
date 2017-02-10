@@ -49,7 +49,7 @@ public class Program extends IconViewModel {
     public void setId(int id) {
         this.id = id;
     }
-    @ApiModelData(type = ApiModelData.CONTENT_TYPES.attribute, name = "columnName")
+    @ApiModelData(type = ApiModelData.CONTENT_TYPES.attribute, name = "name")
     public void setName(String name) {
         this.name = name;
     }
