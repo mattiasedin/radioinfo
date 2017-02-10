@@ -8,7 +8,6 @@ import Views.*;
 import Views.Menu;
 
 import javax.swing.*;
-import javax.xml.ws.Endpoint;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,11 +17,14 @@ import java.util.prefs.Preferences;
 
 /**
  * Created by mattias on 2016-01-08.
+ * <p>
+ * Controller for the user interface. Handles user interaction and input and changes its content depending on the current
+ * state. This class also handles the api calls by running background processes and updating accordingly.
  */
 public class ViewController {
 
     private Timer timer;
-    private TripleSplitView contentManager;
+    private SplitView contentManager;
     private final Preferences pref = Preferences.userNodeForPackage(ViewController.class);
 
     private static final String NUM_UPDATE_INTERVAL_MINUTES_KEY = "update_interval";
@@ -37,7 +39,7 @@ public class ViewController {
         if (source instanceof String) {
             contentManager.changeViewTo(2, new ErrorView((String) source));
         } else {
-            contentManager.changeViewTo(2,new InfoView((Program) actionEvent.getSource()));
+            contentManager.changeViewTo(2,new ProgramInfoView((Program) actionEvent.getSource()));
         }
     };
 
@@ -146,21 +148,15 @@ public class ViewController {
         JPanel mainPanel = new JPanel(new BorderLayout());
         frame.add(mainPanel);
 
-        contentManager = new TripleSplitView();
+        contentManager = new SplitView(3);
         mainPanel.add(contentManager, BorderLayout.CENTER);
 
         JButton btnUpdate = new JButton("Update");
-        btnUpdate.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                timer.restart();
-            }
-        });
+        btnUpdate.addActionListener(e -> timer.restart());
         frame.add(btnUpdate, BorderLayout.PAGE_END);
 
 
-        timer = new Timer(pref.getInt(NUM_UPDATE_INTERVAL_MINUTES_KEY, UPDATE_INTERVAL_MINUTES_DEFAULT)*60000, actionEvent -> {
-            doUpdateChannels();
-        });
+        timer = new Timer(pref.getInt(NUM_UPDATE_INTERVAL_MINUTES_KEY, UPDATE_INTERVAL_MINUTES_DEFAULT)*60000, actionEvent -> doUpdateChannels());
         timer.setInitialDelay(0);
         timer.start();
     }

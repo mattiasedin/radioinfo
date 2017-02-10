@@ -5,17 +5,20 @@ import java.awt.*;
 
 /**
  * Created by mattias on 2/8/17.
+ * <p>
+ * Renders a view to display about information.
  */
 public class AboutView extends JPanel {
 
+    /**
+     * Constructor for the view.
+     */
     public AboutView() {
         super(new BorderLayout());
-
 
         JPanel stackPanel = new JPanel();
         stackPanel.setLayout(new BoxLayout(stackPanel, BoxLayout.Y_AXIS));
         this.add(stackPanel, BorderLayout.NORTH);
-
 
         stackPanel.add(ViewHelper.withPadding(
                 ViewHelper.toLabel(
@@ -49,6 +52,4 @@ public class AboutView extends JPanel {
                         getFont()),
                 0,10,10,10));
     }
-
-
 }

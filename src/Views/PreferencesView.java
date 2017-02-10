@@ -10,12 +10,20 @@ import java.awt.event.ActionListener;
 
 /**
  * Created by mattias on 1/11/17.
+ * <p>
+ * Renders a preferences view with user input for setting a slider value for update interfal
  */
 public class PreferencesView extends JPanel implements ChangeListener {
     private JSlider slider;
     private boolean isCodeTriggered = false;
     private ActionListener listener;
 
+    /**
+     * Constructor for the view.
+     * @param listener the listener called when the update interval is changed, the new value is set as source of the
+     *                 action event.
+     * @param updateInterval the update interval to set as default value.
+     */
     public PreferencesView(ActionListener listener, int updateInterval) {
         super(new BorderLayout());
         this.listener = listener;

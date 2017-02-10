@@ -14,7 +14,7 @@ import java.util.Date;
  * Specified DataTableModel for the Schedulepisode model. This model extends the table with an additional column to
  * highlight the current episode.
  */
-public class ScheduleTableModel extends DataTableModel<Scheduledepisode> {
+public class ScheduleTableModel extends DataIconTableModel<Scheduledepisode> {
     private ImageIcon icon;
     private int highlightedRow = -1;
     private ArrayList<Scheduledepisode> schedules;
@@ -23,17 +23,22 @@ public class ScheduleTableModel extends DataTableModel<Scheduledepisode> {
      * Constructor for the table model
      * @param iconSize prefered size of the icon. The table will resize the icon to fit this value by a square.
      * @param highlightIconSize prefered width of the highlighting column.
-     * @param schedules the
+     * @param datalist the list of data to build the table from
      */
-    public ScheduleTableModel(int iconSize, int highlightIconSize, ArrayList<Scheduledepisode> schedules) {
-        super(Scheduledepisode.class, iconSize, schedules);
+    public ScheduleTableModel(ArrayList<Scheduledepisode> datalist, int iconSize, int highlightIconSize) {
+        super(Scheduledepisode.class, datalist, iconSize);
 
-        this.schedules = schedules;
+        this.schedules = datalist;
 
         ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL   = cldr.getResource("current-selected.png");
-        ImageIcon imageIcon = new ImageIcon(imageURL);
-        icon = new ImageIcon(imageIcon.getImage().getScaledInstance(highlightIconSize, iconSize, Image.SCALE_DEFAULT));
+        if (imageURL != null) {
+            ImageIcon imageIcon = new ImageIcon(imageURL);
+            icon = new ImageIcon(imageIcon.getImage().getScaledInstance(highlightIconSize, iconSize, Image.SCALE_DEFAULT));
+        } else {
+            icon = new ImageIcon();
+        }
+
 
         updateCurrentEpisode();
     }
@@ -82,12 +87,5 @@ public class ScheduleTableModel extends DataTableModel<Scheduledepisode> {
         } else {
             return super.getColumnClass(column-1);
         }
-    }
-
-    @Override
-    public void fireTableCellUpdated(int rowIndex, int columnIndex) {
-        if (columnIndex < getColumnCount()-1)
-            columnIndex++;
-        super.fireTableCellUpdated(rowIndex, columnIndex);
     }
 }

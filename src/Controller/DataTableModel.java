@@ -16,21 +16,18 @@ import java.util.ArrayList;
  * Table model for rendering a table with data structure defined by model with propperly defined TableDisplay annotation.
  * The columns defined by the TableDisplay interface as visible will be shown in the table.
  */
-public class DataTableModel<T extends IconViewModel> extends AbstractTableModel {
+public class DataTableModel<T> extends AbstractTableModel {
     private ArrayList<T> dataList;
     private final Method[] getMethods;
-    private final int iconSize;
 
     /**
      * Constructor for the table model.
      * @param typeParameterClass the typed class to render as table. This class has to implement the TableDisplay
      *                           annotation properly. See the documentation fo TableDisplay interface for further
      *                           information and usage.
-     * @param iconSize prefered size of the icon. The table will resize the icon to fit this value by a square.
      */
-    private DataTableModel(Class<T> typeParameterClass, int iconSize) {
+    private DataTableModel(Class<T> typeParameterClass) {
         dataList = new ArrayList<T>();
-        this.iconSize = iconSize;
 
         ArrayList<Method> allVisibleMethods = getVisibleMethods(typeParameterClass);
 
@@ -45,11 +42,10 @@ public class DataTableModel<T extends IconViewModel> extends AbstractTableModel 
      * @param typeParameterClass the typed class to render as table. This class has to implement the TableDisplay
      *                           annotation properly. See the documentation fo TableDisplay interface for further
      *                           information and usage.
-     * @param iconSize prefered size of the icon. The table will resize the icon to fit this value by a square.
      * @param channels the list of data to show
      */
-    public DataTableModel(Class<T> typeParameterClass, int iconSize, ArrayList<T> channels) {
-        this(typeParameterClass, iconSize);
+    public DataTableModel(Class<T> typeParameterClass, ArrayList<T> channels) {
+        this(typeParameterClass);
         this.dataList = channels;
     }
 
@@ -135,16 +131,7 @@ public class DataTableModel<T extends IconViewModel> extends AbstractTableModel 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         T o = dataList.get(rowIndex);
-
-        if (getMethods[columnIndex].getReturnType() == ImageIcon.class) {
-            IconViewModel model = (IconViewModel) o;
-            model.setIconSize(iconSize);
-            model.setIconDownloadedListener(actionEvent -> {
-                fireTableCellUpdated(rowIndex, columnIndex);
-            });
-        }
-
-        Object results = null;
+        Object results;
         try {
             results = getMethods[columnIndex].invoke(o);
         } catch (IllegalAccessException | InvocationTargetException e) {

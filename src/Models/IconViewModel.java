@@ -30,7 +30,7 @@ public abstract class IconViewModel {
 
     /**
      * Get the icon internet url.
-     * @return
+     * @return the url to the image.
      */
     public abstract String getIconUrl();
 
@@ -73,5 +73,13 @@ public abstract class IconViewModel {
                 propagateBackListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "OK"));
             }
         }
+    }
+
+    /**
+     * Gets if download has ben initiated
+     * @return true if getIcon has been called, false otherwise
+     */
+    public boolean hasImageDownloaded() {
+        return icon != null && hasDownloadStarted;
     }
 }

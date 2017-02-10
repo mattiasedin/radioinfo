@@ -7,10 +7,16 @@ import java.awt.*;
 
 /**
  * Created by mattias on 2016-01-08.
+ * <p>
+ * Renders a view for displaying information about a program
  */
-public class InfoView extends JPanel {
+public class ProgramInfoView extends JPanel {
 
-    public InfoView(Program p) {
+    /**
+     * The constructor for the view.
+     * @param p the program to show.
+     */
+    public ProgramInfoView(Program p) {
         super(new BorderLayout());
 
         JPanel stackPanel = new JPanel();

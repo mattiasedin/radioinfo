@@ -1,5 +1,6 @@
 package Views;
 
+import Controller.DataIconTableModel;
 import Controller.DataTableModel;
 import Controller.DateCellRenderer;
 import Controller.MouseClickListener;
@@ -16,6 +17,8 @@ import java.util.Stack;
 
 /**
  * Created by mattias on 1/11/17.
+ * <p>
+ * Renders a table with models extending icon view model for a column with images.
  */
 public class TableIconView<T extends IconViewModel> extends JPanel {
     private JScrollPane scrollPane;
@@ -28,19 +31,22 @@ public class TableIconView<T extends IconViewModel> extends JPanel {
     private final String dateFormat = "HH:ss";
 
 
-    public TableIconView(DataTableModel<T> tableModel) {
+    /**
+     * Constructor for view
+     * @param tableModel the table model to render the table from.
+     * @see IconViewModel
+     * @see Models.TableDisplay
+     */
+    public TableIconView(DataIconTableModel<T> tableModel) {
         super(new BorderLayout());
 
         this.tableModel = tableModel;
 
         table = new JTable(tableModel);
 
-
         table.addMouseListener(new MouseClickListener() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
-                //JTable table = (JTable) mouseEvent.getSource();
-                //int row = table.getSelectionModel().getLeadSelectionIndex();
                 onListItemClickListener.actionPerformed(new ActionEvent(getSelectedItem(), ActionEvent.ACTION_PERFORMED, "OK"));
                 validate();
                 repaint();
@@ -53,9 +59,24 @@ public class TableIconView<T extends IconViewModel> extends JPanel {
         for (int columnIndex : getIconColumns()) {
             setColumnWidth(columnIndex, ICON_SIZE);
         }
-        updateRowHeights(table);
+        updateColumnsRendering();
     }
 
+    /**
+     * Constructor to create the default table model for this class.
+     * @param typeParameterClass the model class
+     * @param data list of data elements
+     * @see Models.TableDisplay
+     */
+    public TableIconView(Class<T> typeParameterClass, ArrayList<T> data) {
+        this(new DataIconTableModel<T>(typeParameterClass, data, ICON_SIZE));
+    }
+
+    /**
+     * Gets the columns that have the return types of ImageIcon class
+     * @return array specifing the columns that has the corresponding type
+     * @see ImageIcon
+     */
     protected int[] getIconColumns() {
         Stack<Integer> columns = new Stack<Integer>();
         for (int i = 0; i < tableModel.getColumnCount(); i++) {
@@ -72,28 +93,38 @@ public class TableIconView<T extends IconViewModel> extends JPanel {
         return iconColumns;
     }
 
-    public TableIconView(Class<T> typeParameterClass, ArrayList<T> data) {
-        this(new DataTableModel<T>(typeParameterClass, ICON_SIZE, data));
-    }
-
+    /**
+     * Sets a fixed width to a column.
+     * @param columnIndex the column index to alter.
+     * @param width the fixed width to set the column to.
+     */
     public void setColumnWidth(int columnIndex, int width) {
         table.getColumnModel().getColumn(columnIndex).setMinWidth(width);
         table.getColumnModel().getColumn(columnIndex).setMaxWidth(width);
     }
 
-
+    /**
+     * Gets the selected item in view.
+     * @return the selected item
+     */
     public T getSelectedItem() {
         int selectedIndex = table.getSelectionModel().getLeadSelectionIndex();
         return tableModel.getElementAtRow(selectedIndex);
     }
 
+    /**
+     * Sets the data to the table and update the view.
+     * @param data the data to set.
+     */
     public void setData(ArrayList<T> data) {
         tableModel.setDataList(data);
         tableModel.fireTableDataChanged();
     }
 
-
-    private void updateRowHeights(JTable table)
+    /**
+     * Updates the row height and date renderer for all columns.
+     */
+    private void updateColumnsRendering()
     {
         if (table.getRowCount() > 0) {
             int row = 0;
@@ -112,13 +143,18 @@ public class TableIconView<T extends IconViewModel> extends JPanel {
         }
     }
 
-
+    /**
+     * Sets the click listener for the table. Called when user clicks on a table item.
+     * @param onListItemClickListener the listener.
+     */
     public void setOnListItemClickListener(ActionListener onListItemClickListener) {
         this.onListItemClickListener = onListItemClickListener;
     }
 
-
-
+    /**
+     * Scrolls the view to specific element
+     * @param index element index to scroll to.
+     */
     public void scrollTo(int index) {
         index--;
         if (index <= table.getRowCount() && index > 0) {
