@@ -10,9 +10,11 @@ import java.util.Date;
 
 /**
  * Created by mattias on 2/8/17.
+ * <p>
+ * Specific defined background worker for schedules which downloads multiple times if have to.
  */
 public class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker<Scheduledepisode, ArrayList<Scheduledepisode>> {
-    private int channelId;
+    private final int channelId;
 
     /**
      * Constructor for the class
@@ -28,9 +30,6 @@ public class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker<Sc
     protected ArrayList<Scheduledepisode> getData(String url) throws Exception {
         ArrayList<Scheduledepisode> data = getReader().getDataListFromUri(url);
         if (data != null) {
-
-            Scheduledepisode currentEpisode = getEpisodeOnTime(new Date(), data);
-
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.HOUR, -12);
             Date datePast = cal.getTime();

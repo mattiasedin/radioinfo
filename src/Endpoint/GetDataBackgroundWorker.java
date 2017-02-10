@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
  * Download data that is not paginated and not in list format.
  */
 public class GetDataBackgroundWorker<T> extends AbstractBackgroundWorker<T> {
-    private EndpointAPIReader<T> dr;
+    private final EndpointAPIReader<T> dr;
 
     /**
      * Constructor for the class

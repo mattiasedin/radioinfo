@@ -15,9 +15,9 @@ import java.util.Date;
  * highlight the current episode.
  */
 public class ScheduleTableModel extends DataIconTableModel<Scheduledepisode> {
-    private ImageIcon icon;
+    private final ImageIcon icon;
     private int highlightedRow = -1;
-    private ArrayList<Scheduledepisode> schedules;
+    private final ArrayList<Scheduledepisode> schedules;
 
     /**
      * Constructor for the table model

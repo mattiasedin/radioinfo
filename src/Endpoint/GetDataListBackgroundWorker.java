@@ -1,13 +1,7 @@
 package Endpoint;
 
-import Exceptions.*;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by mattias on 1/15/17.
@@ -15,7 +9,7 @@ import java.util.concurrent.ExecutionException;
  * Download data that is paginated.
  */
 public class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends AbstractBackgroundWorker<U> {
-    private EndpointAPIReader<T> dr;
+    private final EndpointAPIReader<T> dr;
 
     /**
      * Constructor for the class

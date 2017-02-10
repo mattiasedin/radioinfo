@@ -1,7 +1,6 @@
 package Views;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -14,9 +13,9 @@ import java.awt.event.ActionListener;
  * Renders a preferences view with user input for setting a slider value for update interfal
  */
 public class PreferencesView extends JPanel implements ChangeListener {
-    private JSlider slider;
+    private final JSlider slider;
     private boolean isCodeTriggered = false;
-    private ActionListener listener;
+    private final ActionListener listener;
 
     /**
      * Constructor for the view.

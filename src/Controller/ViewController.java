@@ -9,7 +9,6 @@ import Views.Menu;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +23,7 @@ import java.util.prefs.Preferences;
 public class ViewController {
 
     private Timer timer;
-    private SplitView contentManager;
+    private final SplitView contentManager = new SplitView(3);
     private final Preferences pref = Preferences.userNodeForPackage(ViewController.class);
 
     private static final String NUM_UPDATE_INTERVAL_MINUTES_KEY = "update_interval";
@@ -34,7 +33,7 @@ public class ViewController {
     /**
      * Action called when program download is complete.
      */
-    private ActionListener onProgramDownloaded = actionEvent -> {
+    private final ActionListener onProgramDownloaded = actionEvent -> {
         Object source = actionEvent.getSource();
         if (source instanceof String) {
             contentManager.changeViewTo(2, new ErrorView((String) source));
@@ -46,7 +45,7 @@ public class ViewController {
     /**
      * Action called when schedule is clicked on by user.
      */
-    private ActionListener onScheduleClicked = actionEvent -> {
+    private final ActionListener onScheduleClicked = actionEvent -> {
         Scheduledepisode source = (Scheduledepisode) actionEvent.getSource();
         contentManager.changeViewTo(2, new LoadingView());
         Program p = source.getProgram();
@@ -56,7 +55,7 @@ public class ViewController {
     /**
      * Action called when schedules download is complete.
      */
-    private ActionListener onScheduleDownloadComplete = actionEvent -> {
+    private final ActionListener onScheduleDownloadComplete = actionEvent -> {
         Object source = actionEvent.getSource();
         if (source instanceof String) {
             contentManager.changeViewTo(1, new ErrorView((String) source));
@@ -83,7 +82,7 @@ public class ViewController {
     /**
      * Action called when user clicks on a Channel.
      */
-    private ActionListener onChannelClicked = actionEvent -> {
+    private final ActionListener onChannelClicked = actionEvent -> {
         contentManager.changeViewTo(1, new LoadingView());
         Channel c = (Channel) actionEvent.getSource();
         new GetSchedulesBackgroundWorker(onScheduleDownloadComplete, c.getId()).execute();
@@ -94,7 +93,7 @@ public class ViewController {
     /**
      * Action called when Channels download is complete.
      */
-    private ActionListener onChannelDownloadComplete = actionEvent -> {
+    private final ActionListener onChannelDownloadComplete = actionEvent -> {
         if (actionEvent.getSource() instanceof String) {
             contentManager.changeViewTo(0, new ErrorView((String) actionEvent.getSource()));
         } else {
@@ -107,7 +106,7 @@ public class ViewController {
     /**
      * Action called when settings changed update interval value
      */
-    private ActionListener onSettingsChanged = actionEvent -> {
+    private final ActionListener onSettingsChanged = actionEvent -> {
         if (actionEvent.getSource() instanceof Integer) {
             int interval = (int) actionEvent.getSource();
             pref.putInt(NUM_UPDATE_INTERVAL_MINUTES_KEY, interval);
@@ -120,7 +119,7 @@ public class ViewController {
     /**
      * Action called when a menu item is clicked
      */
-    private ActionListener onMenuClicked = actionEvent -> {
+    private final ActionListener onMenuClicked = actionEvent -> {
         int opt = (int) actionEvent.getSource();
 
         switch (opt) {
@@ -148,7 +147,6 @@ public class ViewController {
         JPanel mainPanel = new JPanel(new BorderLayout());
         frame.add(mainPanel);
 
-        contentManager = new SplitView(3);
         mainPanel.add(contentManager, BorderLayout.CENTER);
 
         JButton btnUpdate = new JButton("Update");

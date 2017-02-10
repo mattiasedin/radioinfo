@@ -2,6 +2,8 @@ package Models;
 
 /**
  * Created by mattias on 1/11/17.
+ * <p>
+ * Object representaion of the SR api call for programs.
  */
 @ApiModel(container = "program")
 public class Program extends IconViewModel {

@@ -1,11 +1,8 @@
 package Views;
 
-import Controller.DataIconTableModel;
-import Controller.DataTableModel;
 import Controller.ScheduleTableModel;
 import Models.Scheduledepisode;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 /**

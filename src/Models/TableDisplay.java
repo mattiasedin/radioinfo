@@ -19,11 +19,11 @@ public @interface TableDisplay {
      * Gets the preferred column index.
      * @return the index.
      */
-    public int order() default 99;
+    int order() default 99;
 
     /**
      * Gets the column name for this value.
      * @return the name.
      */
-    public String columnName();
+    String columnName();
 }

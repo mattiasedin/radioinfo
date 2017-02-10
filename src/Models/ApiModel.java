@@ -23,16 +23,16 @@ public @interface ApiModel {
      * @see Endpoint.NodeReader
      * @see Endpoint.EndpointAPIReader
      */
-    public String container();
+    String container();
 
     /**
      * Get if the api model contains pagination in terms of multiple api-calls for the whole data set. If true the
      * Endpoint reader should traverse the api for multiple calls to download multiple times. This is done acording to
      * the pagination class.
-     * @return
+     * @return if paginated or not
      * @see Pagination
      * @see Endpoint.NodeReader
      * @see Endpoint.EndpointAPIReader
      */
-    public boolean pagination() default false;
+    boolean pagination() default false;
 }

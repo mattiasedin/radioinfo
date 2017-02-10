@@ -22,7 +22,7 @@ public abstract class IconViewModel {
     /**
      * Action called when download is complete.
      */
-    private ActionListener iconDownloadedCallback =  actionEvent -> {
+    private final ActionListener iconDownloadedCallback = actionEvent -> {
         Image img = (Image) actionEvent.getSource();
         icon = new ImageIcon(img.getScaledInstance(iconSize, iconSize, Image.SCALE_DEFAULT));
         propagateBackListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "OK"));

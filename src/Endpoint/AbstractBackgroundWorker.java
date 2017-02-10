@@ -11,8 +11,8 @@ import java.util.concurrent.ExecutionException;
  * Arbritary swing background worker that calls an action listener after the process is complete.
  */
 public abstract class AbstractBackgroundWorker<T> extends SwingWorker<T, Integer> {
-    private ActionListener listener;
-    private String dataUri;
+    private final ActionListener listener;
+    private final String dataUri;
     private Exception failedException;
 
     /**

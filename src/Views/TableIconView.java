@@ -21,9 +21,9 @@ import java.util.Stack;
  * Renders a table with models extending icon view model for a column with images.
  */
 public class TableIconView<T extends IconViewModel> extends JPanel {
-    private JScrollPane scrollPane;
-    private JTable table;
-    private DataTableModel<T> tableModel;
+    private final JScrollPane scrollPane;
+    private final JTable table;
+    private final DataTableModel<T> tableModel;
     private ActionListener onListItemClickListener;
 
     protected static final int ICON_SIZE = 150;

@@ -26,8 +26,8 @@ import java.util.TimeZone;
 public class NodeReader<T> {
 
     private final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    private Class<T> classType;
-    private SimpleDateFormat formatter;
+    private final Class<T> classType;
+    private final SimpleDateFormat formatter;
 
     /**
      * Constructor for class
@@ -52,9 +52,8 @@ public class NodeReader<T> {
         String className = classType.getSimpleName().toLowerCase(); //classType.getAnnotation(ApiModel.class).container();
 
         /* Get node that matches classname */
-        Node currentNode = findNodeByNameInChilds(parentNode, className);
 
-        return currentNode;
+        return findNodeByNameInChilds(parentNode, className);
     }
 
     /**
@@ -78,8 +77,6 @@ public class NodeReader<T> {
      * @param nodeToConvert the node containing the object values
      * @return the converted object
      * @throws ModelInstantiationException if the instantiation of the class failed with access violation or access error
-     * @throws ModelParseException if the given nodes values could not be parsed to model. This is due to inconsistency
-     *                             in the model and the given node.
      */
     public T nodeToObject(Node nodeToConvert) throws ModelInstantiationException, ModelMalformedException {
 

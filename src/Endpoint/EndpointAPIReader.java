@@ -109,7 +109,7 @@ public class EndpointAPIReader<T> {
 
         ApiModel annotation = typeParameterClass.getAnnotation(ApiModel.class);
 
-        if (annotation.pagination() == false) {
+        if (!annotation.pagination()) {
             NodeReader<T> dataNodeReader = new NodeReader<>(typeParameterClass);
 
             Node dataNode = dataNodeReader.findClassNodeInChilds(doc.getDocumentElement());
@@ -139,8 +139,7 @@ public class EndpointAPIReader<T> {
             try {
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 DocumentBuilder db = dbf.newDocumentBuilder();
-                Document doc = db.parse(xml);
-                return doc;
+                return db.parse(xml);
             }
             catch (ParserConfigurationException | SAXException e){
                 throw new XMLParseExeption("Response from server does not match xml format");
