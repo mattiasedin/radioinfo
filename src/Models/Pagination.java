@@ -4,7 +4,7 @@ package Models;
  * Created by mattias on 1/18/17.
  * <p>
  * Pagination class for the SR API. This class represent the the pagination behaviour of the api. Some api calls is
- * divided in mutliple calls described in this class.
+ * divided in multiple calls described in this class.
  */
 @ApiModel(container = "pagination")
 public class Pagination {

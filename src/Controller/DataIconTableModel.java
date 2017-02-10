@@ -20,7 +20,7 @@ public class DataIconTableModel<T extends IconViewModel> extends DataTableModel<
      * @param typeParameterClass the typed class to render as table. This class has to implement the TableDisplay
      *                           annotation properly. See the documentation fo TableDisplay interface for further
      *                           information and usage.
-     * @param iconSize           prefered size of the icon. The table will resize the icon to fit this value by a square.
+     * @param iconSize           preferred size of the icon. The table will resize the icon to fit this value by a square.
      * @param dataList           the list of data to show
      */
     public DataIconTableModel(Class<T> typeParameterClass, ArrayList<T> dataList, int iconSize) {

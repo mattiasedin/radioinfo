@@ -13,7 +13,7 @@ import java.awt.*;
 public class ViewHelper {
 
     /**
-     * Wrapps the component in a padding component.
+     * Wraps the component in a padding component.
      * @param c component to wrap
      * @param top padding
      * @param right padding
@@ -29,7 +29,7 @@ public class ViewHelper {
     }
 
     /**
-     * Wrapps the component with padding
+     * Wraps the component with padding
      * @param c component to wrap
      * @param topBottom top and bottom padding
      * @param leftRight left and right padding

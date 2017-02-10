@@ -41,17 +41,17 @@ public class EndpointAPIReader<T> {
     }
 
     /**
-     * Donwloads the data from internet using http connection and converts to the specified type.
+     * Downloads the data from internet using http connection and converts to the specified type.
      * @param uri the url to download the data from.
      * @return list of data if typed class extends ApiModel and has pagination else null
-     * @throws XMLParseExeption if the downloaded object is not a type of xml
+     * @throws XMLParseException if the downloaded object is not a type of xml
      * @throws InternetConnectionException if there is no internet connection
      * @throws MalformedURLException if the connection to the specified url could not be made
      * @throws ModelMalformedException if the data does not match the model in any way
      * @throws ModelInstantiationException if the typed class have errors in form of access violation or not found
      * @see ApiModel
      */
-    public ArrayList<T> getDataListFromUri(String uri) throws XMLParseExeption, InternetConnectionException, MalformedURLException, ModelMalformedException, ModelInstantiationException {
+    public ArrayList<T> getDataListFromUri(String uri) throws XMLParseException, InternetConnectionException, MalformedURLException, ModelMalformedException, ModelInstantiationException {
         if (!typeParameterClass.isAnnotationPresent(ApiModel.class))
             return null;
 
@@ -92,16 +92,16 @@ public class EndpointAPIReader<T> {
     }
 
     /**
-     * Donwloads the data from internet using http connection and converts to the specified type.
+     * Downloads the data from internet using http connection and converts to the specified type.
      * @param uri the url to download the data from.
-     * @return downloaded object if typed class exte
-     * @throws XMLParseExeption if the downloaded object is not a type of xml
+     * @return downloaded object if typed class exist
+     * @throws XMLParseException if the downloaded object is not a type of xml
      * @throws InternetConnectionException if there is no internet connection
      * @throws MalformedURLException if the connection to the specified url could not be made
      * @throws ModelMalformedException if the data does not match the model in any way
      * @throws ModelInstantiationException if the typed class have errors in form of access violation or not found
      */
-    public T getDataFromUri(String uri) throws XMLParseExeption, InternetConnectionException, MalformedURLException, ModelMalformedException, ModelInstantiationException {
+    public T getDataFromUri(String uri) throws XMLParseException, InternetConnectionException, MalformedURLException, ModelMalformedException, ModelInstantiationException {
         if (!typeParameterClass.isAnnotationPresent(ApiModel.class))
             return null;
 
@@ -126,9 +126,9 @@ public class EndpointAPIReader<T> {
      * @return the xml document
      * @throws MalformedURLException if the connection to the specified url could not be made
      * @throws InternetConnectionException if no internet connection could be established
-     * @throws XMLParseExeption if the download object is not of xml type
+     * @throws XMLParseException if the download object is not of xml type
      */
-    private Document getXMLDocument(String uri) throws MalformedURLException, InternetConnectionException, XMLParseExeption {
+    private Document getXMLDocument(String uri) throws MalformedURLException, InternetConnectionException, XMLParseException {
         URL url = new URL(uri);
         try {
             HttpURLConnection connection =
@@ -142,7 +142,7 @@ public class EndpointAPIReader<T> {
                 return db.parse(xml);
             }
             catch (ParserConfigurationException | SAXException e){
-                throw new XMLParseExeption("Response from server does not match xml format");
+                throw new XMLParseException("Response from server does not match xml format");
             } finally {
                 connection.disconnect();
             }

@@ -16,7 +16,7 @@ public class EndpointAPI {
     /**
      * Gets all programs for specific channel.
      * <p>
-     * Note: This string has to be formated with an channel id.
+     * Note: This string has to be formatted with an channel id.
      * @see Models.Program
      */
     public static final String PROGRAMS_FOR_CHANNEL = "http://api.sr.se/api/v2/programs/index?channelid=%s";
@@ -24,7 +24,7 @@ public class EndpointAPI {
     /**
      * Gets specific program.
      * <p>
-     * Note: This string has to be formated with a program id.
+     * Note: This string has to be formatted with a program id.
      * @see Models.Program
      */
     public static final String PROGRAM = "http://api.sr.se/api/v2/programs/%s";
@@ -32,7 +32,7 @@ public class EndpointAPI {
     /**
      * Gets specific schedule.
      * <p>
-     * Note: This string has to be formated with a channel id.
+     * Note: This string has to be formatted with a channel id.
      * @see Models.Scheduledepisode
      */
     public static final String SCHEDULE = "http://api.sr.se/api/v2/scheduledepisodes?channelid=%s";
@@ -40,7 +40,7 @@ public class EndpointAPI {
     /**
      * Gets schedule for a specific date
      * <p>
-     * Note: This string has to be formated with a channel id and date in format "yyyy-MM-dd"
+     * Note: This string has to be formatted with a channel id and date in format "yyyy-MM-dd"
      * @see Models.Scheduledepisode
      */
     public static final String SCHEDULE_FOR_TIME = "http://api.sr.se/api/v2/scheduledepisodes?channelid=%s&date=%s";

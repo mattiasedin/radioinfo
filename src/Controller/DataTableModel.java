@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by mattias on 1/11/17.
  *
- * Table model for rendering a table with data structure defined by model with propperly defined TableDisplay annotation.
+ * Table model for rendering a table with data structure defined by model with properly defined TableDisplay annotation.
  * The columns defined by the TableDisplay interface as visible will be shown in the table.
  */
 public class DataTableModel<T> extends AbstractTableModel {

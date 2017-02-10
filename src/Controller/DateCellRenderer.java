@@ -30,7 +30,7 @@ public class DateCellRenderer extends DefaultTableCellRenderer {
             super.setText(strValue);
         }
         else {
-            super.setText(value.toString());
+            super.setValue(value);
         }
     }
 }

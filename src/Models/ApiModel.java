@@ -27,7 +27,7 @@ public @interface ApiModel {
 
     /**
      * Get if the api model contains pagination in terms of multiple api-calls for the whole data set. If true the
-     * Endpoint reader should traverse the api for multiple calls to download multiple times. This is done acording to
+     * Endpoint reader should traverse the api for multiple calls to download multiple times. This is done according to
      * the pagination class.
      * @return if paginated or not
      * @see Pagination

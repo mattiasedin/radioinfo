@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
  * Created by mattias on 1/11/17.
  * <p>
  * View model for a model. This class has an icon that will be downloaded and scaled to a specific size. When the icon
- * is getted first the icon will be downloaded and saved in memory for further use. Only one download is
+ * getIcon() is called for first time, the icon will be downloaded and saved in memory for further use. Only one download is
  */
 public abstract class IconViewModel {
     private ImageIcon icon;

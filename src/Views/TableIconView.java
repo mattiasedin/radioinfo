@@ -74,7 +74,7 @@ public class TableIconView<T extends IconViewModel> extends JPanel {
 
     /**
      * Gets the columns that have the return types of ImageIcon class
-     * @return array specifing the columns that has the corresponding type
+     * @return array specifying the columns that has the corresponding type
      * @see ImageIcon
      */
     protected int[] getIconColumns() {

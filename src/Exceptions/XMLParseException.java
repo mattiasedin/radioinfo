@@ -5,13 +5,13 @@ package Exceptions;
  * <p>
  * Generated if the the object could not be parsed to xml type
  */
-public class XMLParseExeption extends Exception {
+public class XMLParseException extends Exception {
 
     /**
      * Constructor for the class
      * @param m the exception message
      */
-    public XMLParseExeption(String m) {
+    public XMLParseException(String m) {
         super(m);
     }
 }

@@ -21,8 +21,8 @@ public class ScheduleTableModel extends DataIconTableModel<Scheduledepisode> {
 
     /**
      * Constructor for the table model
-     * @param iconSize prefered size of the icon. The table will resize the icon to fit this value by a square.
-     * @param highlightIconSize prefered width of the highlighting column.
+     * @param iconSize preferred size of the icon. The table will resize the icon to fit this value by a square.
+     * @param highlightIconSize preferred width of the highlighting column.
      * @param datalist the list of data to build the table from
      */
     public ScheduleTableModel(ArrayList<Scheduledepisode> datalist, int iconSize, int highlightIconSize) {

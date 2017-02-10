@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by mattias on 2/9/17.
  *
- * Arbritary swing background worker that calls an action listener after the process is complete.
+ * Arbitrary swing background worker that calls an action listener after the process is complete.
  */
 public abstract class AbstractBackgroundWorker<T> extends SwingWorker<T, Integer> {
     private final ActionListener listener;
@@ -26,7 +26,7 @@ public abstract class AbstractBackgroundWorker<T> extends SwingWorker<T, Integer
     }
 
     /**
-     * Should not be overriden in implementing class. Override the getData() method instead this mathod handles the expetion
+     * Should not be overridden in implementing class. Override the getData() method instead this method handles the exception
      * callback if something goes wrong in the operation.
      * @return the downloaded data
      */

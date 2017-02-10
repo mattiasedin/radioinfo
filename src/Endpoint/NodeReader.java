@@ -31,7 +31,7 @@ public class NodeReader<T> {
 
     /**
      * Constructor for class
-     * @param classType the typed class to instantiate during convertion. This class should need to use the ApiModelData
+     * @param classType the typed class to instantiate during conversion. This class should need to use the ApiModelData
      *                  annotation interface for its setters
      * @see ApiModelData
      */
@@ -73,14 +73,14 @@ public class NodeReader<T> {
     }
 
     /**
-     * Instansiate object from generic type and sets its value from the node with matching setters.
+     * Instantiate object from generic type and sets its value from the node with matching setters.
      * @param nodeToConvert the node containing the object values
      * @return the converted object
      * @throws ModelInstantiationException if the instantiation of the class failed with access violation or access error
      */
     public T nodeToObject(Node nodeToConvert) throws ModelInstantiationException, ModelMalformedException {
 
-        T dataElement = null;
+        T dataElement;
         try {
             Constructor con = classType.getConstructor();
 
@@ -156,7 +156,7 @@ public class NodeReader<T> {
      * @param nodeListContainer container node
      * @return list of typed objects.
      * @throws ModelMalformedException if the parsing from node to object malfunctioned.
-     * @throws ModelInstantiationException if the instatiation of the typed object failed.
+     * @throws ModelInstantiationException if the instantiation of the typed object failed.
      */
     public ArrayList<T> getObjectListFromNode(Node nodeListContainer) throws ModelInstantiationException, ModelMalformedException {
         NodeList nodeDataList = nodeListContainer.getChildNodes();
@@ -210,7 +210,7 @@ public class NodeReader<T> {
         } catch (IllegalArgumentException e) {
             throw new ModelMalformedException("Model setter does not match given type");
         } catch (IllegalAccessException e) {
-            throw new ModelInstantiationException("Unable to acces model class setter");
+            throw new ModelInstantiationException("Unable to access model class setter");
         } catch (InvocationTargetException e) {
             throw new ModelInstantiationException("Unable to invoke model setter");
         }

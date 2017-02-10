@@ -137,7 +137,7 @@ public class ViewController {
 
 
     /**
-     * Constructor for view controller. Handles interaction changes and changing views acording to user input.
+     * Constructor for view controller. Handles interaction changes and changing views according to user input.
      * @param frame the frame to draw the views on.
      */
     public ViewController(final JFrame frame) {

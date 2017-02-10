@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by mattias on 1/11/17.
  * <p>
- * Renders a preferences view with user input for setting a slider value for update interfal
+ * Renders a preferences view with user input for setting a slider value for update interval
  */
 public class PreferencesView extends JPanel implements ChangeListener {
     private final JSlider slider;

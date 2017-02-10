@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * Created by mattias on 2016-01-07.
  *
- * This is a wrapper for dynamic JPanels. The JPanels can be changed at runtime for a dynamic handeling of the content.
+ * This is a wrapper for dynamic JPanels. The JPanels can be changed at runtime for a dynamic handling of the content.
  */
 public class ContentViewManager extends JPanel {
 
@@ -21,7 +21,7 @@ public class ContentViewManager extends JPanel {
 
     /**
      * Changes the content of this wrapper to the defined view. This method also disposes the current view is set.
-     * @param view the conent to show
+     * @param view the content to show
      */
     public void changeViewTo(JPanel view) {
         if (currentView != null) {

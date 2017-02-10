@@ -30,7 +30,7 @@ public class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends Abst
     }
 
     /**
-     * Gets the endpoint reader that has been instanciated and ready for useage.
+     * Gets the endpoint reader that has been instanciated and ready for usage.
      * @return the endpoint reader.
      */
     public EndpointAPIReader<T> getReader() {
