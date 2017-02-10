@@ -47,11 +47,11 @@ public class EndpointAPIReader<T> {
      * @throws XMLParseExeption if the downloaded object is not a type of xml
      * @throws InternetConnectionException if there is no internet connection
      * @throws MalformedURLException if the connection to the specified url could not be made
-     * @throws ModelParseException if the data does not match the model in any way
-     * @throws NodeInstantiationException if the typed class have errors in form of access violation or not found
+     * @throws ModelMalformedException if the data does not match the model in any way
+     * @throws ModelInstantiationException if the typed class have errors in form of access violation or not found
      * @see ApiModel
      */
-    public ArrayList<T> getDataListFromUri(String uri) throws XMLParseExeption, InternetConnectionException, MalformedURLException, ModelParseException, NodeInstantiationException {
+    public ArrayList<T> getDataListFromUri(String uri) throws XMLParseExeption, InternetConnectionException, MalformedURLException, ModelMalformedException, ModelInstantiationException {
         if (!typeParameterClass.isAnnotationPresent(ApiModel.class))
             return null;
 
@@ -67,19 +67,21 @@ public class EndpointAPIReader<T> {
 
 
 
-            Node paginationNode = paginationNodeReader.findNodeInChilds(documentNode);
+            Node paginationNode = paginationNodeReader.findClassNodeInChilds(documentNode);
             Pagination page = paginationNodeReader.nodeToObject(paginationNode);
             ArrayList<T> dataList = new ArrayList<T>(page.getTotalhits());
 
             if (page.getTotalhits() > 0) {
-                dataList.addAll(dataNodeReader.getObjectListFromNode(documentNode, annotation.container()));
+                Node containerNode = NodeReader.findNodeByNameInChilds(documentNode,annotation.container());
+                dataList.addAll(dataNodeReader.getObjectListFromNode(containerNode));
 
                 while (page.hasNextPage()) {
                     documentNode = getXMLDocument(page.getNextpage()).getDocumentElement();
-                    paginationNode = paginationNodeReader.findNodeInChilds(documentNode);
+                    paginationNode = paginationNodeReader.findClassNodeInChilds(documentNode);
                     page = paginationNodeReader.nodeToObject(paginationNode);
 
-                    dataList.addAll(dataNodeReader.getObjectListFromNode(documentNode, annotation.container()));
+                    containerNode = NodeReader.findNodeByNameInChilds(documentNode,annotation.container());
+                    dataList.addAll(dataNodeReader.getObjectListFromNode(containerNode));
                 }
             }
 
@@ -93,7 +95,7 @@ public class EndpointAPIReader<T> {
      * Donwloads the data from internet using http connection and converts to the specified type.
      * @param uri the url to download the data from.
      * @return downloaded object if typed class extends ApiModel and has no pagination else null
-     * @throws NodeInstantiationException if the typed class have errors in form of access violation or not implementing the interfaces
+     * @throws ModelInstantiationException if the typed class have errors in form of access violation or not implementing the interfaces
      * @throws ModelParseException if the data does not match the model in any way
      * @throws InvalidUrlException if the connection to the specified url could not be made
      * @see ApiModel
@@ -107,10 +109,10 @@ public class EndpointAPIReader<T> {
      * @throws XMLParseExeption if the downloaded object is not a type of xml
      * @throws InternetConnectionException if there is no internet connection
      * @throws MalformedURLException if the connection to the specified url could not be made
-     * @throws ModelParseException if the data does not match the model in any way
-     * @throws NodeInstantiationException if the typed class have errors in form of access violation or not found
+     * @throws ModelMalformedException if the data does not match the model in any way
+     * @throws ModelInstantiationException if the typed class have errors in form of access violation or not found
      */
-    public T getDataFromUri(String uri) throws XMLParseExeption, InternetConnectionException, MalformedURLException, ModelParseException, NodeInstantiationException {
+    public T getDataFromUri(String uri) throws XMLParseExeption, InternetConnectionException, MalformedURLException, ModelMalformedException, ModelInstantiationException {
         if (!typeParameterClass.isAnnotationPresent(ApiModel.class))
             return null;
 
@@ -121,7 +123,7 @@ public class EndpointAPIReader<T> {
         if (annotation.pagination() == false) {
             NodeReader<T> dataNodeReader = new NodeReader<>(typeParameterClass);
 
-            Node dataNode = dataNodeReader.findNodeInChilds(doc.getDocumentElement());
+            Node dataNode = dataNodeReader.findClassNodeInChilds(doc.getDocumentElement());
 
             if (dataNode != null)
                 return dataNodeReader.nodeToObject(dataNode);
@@ -129,13 +131,13 @@ public class EndpointAPIReader<T> {
         return null;
     }
 
-
     /**
      * Downloads the xml document for specific url with an http connection
      * @param uri the url to the document
      * @return the xml document
-     * @throws ModelParseException if the data does not match the model in any way
-     * @throws InvalidUrlException if the connection to the specified url could not be made
+     * @throws MalformedURLException if the connection to the specified url could not be made
+     * @throws InternetConnectionException if no internet connection could be established
+     * @throws XMLParseExeption if the download object is not of xml type
      */
     private Document getXMLDocument(String uri) throws MalformedURLException, InternetConnectionException, XMLParseExeption {
         URL url = new URL(uri);
