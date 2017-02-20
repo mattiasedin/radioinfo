@@ -1,7 +1,5 @@
 package Views;
 
-import Controller.ContentViewManager;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,7 +9,7 @@ import java.awt.*;
  * View wrapper that can hold arbitrary number of views in horizontal split
  */
 public class SplitView extends JPanel {
-    private ContentViewManager[] viewManagers = new ContentViewManager[3];
+    private ContentViewSwitcher[] viewManagers;
 
     /**
      * Constructor of view
@@ -20,10 +18,10 @@ public class SplitView extends JPanel {
     public SplitView(int nrOfViews) {
         super(new GridLayout(0, nrOfViews));
 
-        viewManagers = new ContentViewManager[nrOfViews];
+        viewManagers = new ContentViewSwitcher[nrOfViews];
 
         for (int i = 0; i < viewManagers.length; i++) {
-            viewManagers[i] = new ContentViewManager();
+            viewManagers[i] = new ContentViewSwitcher();
             this.add(viewManagers[i]);
         }
     }

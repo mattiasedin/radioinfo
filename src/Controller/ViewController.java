@@ -5,13 +5,11 @@ import Models.Channel;
 import Models.Program;
 import Models.Scheduledepisode;
 import Views.*;
-import Views.Menu;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.prefs.Preferences;
 
 /**
@@ -22,6 +20,7 @@ import java.util.prefs.Preferences;
  */
 public class ViewController {
 
+    private final StatusBar statusPanel = new StatusBar();
     private Timer timer;
     private final SplitView contentManager = new SplitView(3);
     private final Preferences pref = Preferences.userNodeForPackage(ViewController.class);
@@ -34,18 +33,22 @@ public class ViewController {
      * Action called when program download is complete.
      */
     private final ActionListener onProgramDownloaded = actionEvent -> {
-        Object source = actionEvent.getSource();
-        if (source instanceof String) {
-            contentManager.changeViewTo(2, new ErrorView((String) source));
-        } else {
-            contentManager.changeViewTo(2,new ProgramInfoView((Program) actionEvent.getSource()));
-        }
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            Object source = actionEvent.getSource();
+            if (source instanceof Exception) {
+                handleError((Exception) actionEvent.getSource(), 3);
+            } else {
+                statusPanel.setText("Program fethced.");
+                contentManager.changeViewTo(2, new ProgramInfoView((Program) source));
+            }
+        });
     };
 
     /**
      * Action called when schedule is clicked on by user.
      */
     private final ActionListener onScheduleClicked = actionEvent -> {
+        statusPanel.setText("Fetching schedules for channel...");
         Scheduledepisode source = (Scheduledepisode) actionEvent.getSource();
         contentManager.changeViewTo(2, new LoadingView());
         Program p = source.getProgram();
@@ -56,37 +59,29 @@ public class ViewController {
      * Action called when schedules download is complete.
      */
     private final ActionListener onScheduleDownloadComplete = actionEvent -> {
-        Object source = actionEvent.getSource();
-        if (source instanceof String) {
-            contentManager.changeViewTo(1, new ErrorView((String) source));
-        } else {
-            ArrayList<Scheduledepisode> data = (ArrayList<Scheduledepisode>) actionEvent.getSource();
-            TableIconView<Scheduledepisode> view = new TableScheduleView(data);
-            view.setOnListItemClickListener(onScheduleClicked);
-            contentManager.changeViewTo(1, view);
-
-            Date currentTime = new Date();
-            int currentScheduleIndex = 0;
-            for (int i = 0; i < data.size(); i++) {
-                boolean hasStarted = data.get(i).getStarttimeutc().after(currentTime);
-                boolean hasEnded = data.get(i).getEndtimeutc().before(currentTime);
-                if (hasStarted && !hasEnded) {
-                    currentScheduleIndex = i;
-                    break;
-                }
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            Object source = actionEvent.getSource();
+            if (source instanceof Exception) {
+                handleError((Exception) source, 1);
+            } else {
+                statusPanel.setText("Schedules fetched.");
+                ArrayList<Scheduledepisode> data = (ArrayList<Scheduledepisode>) source;
+                TableScheduleView view = new TableScheduleView(data);
+                view.setOnListItemClickListener(onScheduleClicked);
+                contentManager.changeViewTo(1, view);
+                view.scrollToCurrent();
             }
-            view.scrollTo(currentScheduleIndex);
-        }
+        });
     };
 
     /**
      * Action called when user clicks on a Channel.
      */
     private final ActionListener onChannelClicked = actionEvent -> {
+        statusPanel.setText("Fetching schedules for channel...");
         contentManager.changeViewTo(1, new LoadingView());
         Channel c = (Channel) actionEvent.getSource();
         new GetSchedulesBackgroundWorker(onScheduleDownloadComplete, c.getId()).execute();
-        //new GetDataListBackgroundWorker<Scheduledepisode, ArrayList<Scheduledepisode>>(onScheduleDownloadComplete, Scheduledepisode.class, String.format(EndpointAPI.SCHEDULE, c.getId())).execute();
     };
 
 
@@ -94,13 +89,17 @@ public class ViewController {
      * Action called when Channels download is complete.
      */
     private final ActionListener onChannelDownloadComplete = actionEvent -> {
-        if (actionEvent.getSource() instanceof String) {
-            contentManager.changeViewTo(0, new ErrorView((String) actionEvent.getSource()));
-        } else {
-            TableIconView<Channel> view = new TableIconView<Channel>(Channel.class, (ArrayList<Channel>) actionEvent.getSource());
-            view.setOnListItemClickListener(onChannelClicked);
-            contentManager.changeViewTo(0,view);
-        }
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            Object source = actionEvent.getSource();
+            if (source instanceof Exception) {
+                handleError((Exception) source, 0);
+            } else {
+                statusPanel.setText("Channels fetched.");
+                TableIconView<Channel> view = new TableIconView<Channel>(Channel.class, (ArrayList<Channel>) source);
+                view.setOnListItemClickListener(onChannelClicked);
+                contentManager.changeViewTo(0, view);
+            }
+        });
     };
 
     /**
@@ -123,13 +122,13 @@ public class ViewController {
         int opt = (int) actionEvent.getSource();
 
         switch (opt) {
-            case Menu.OPTIONS.update:
+            case Views.Menu.OPTIONS.update:
                 timer.restart();
                 break;
-            case Menu.OPTIONS.preferences:
+            case Views.Menu.OPTIONS.preferences:
                 createPopup("Preferences", new PreferencesView(onSettingsChanged, pref.getInt(NUM_UPDATE_INTERVAL_MINUTES_KEY, 5)));
                 break;
-            case Menu.OPTIONS.about:
+            case Views.Menu.OPTIONS.about:
                 createPopup("About", new AboutView());
                 break;
         }
@@ -141,19 +140,30 @@ public class ViewController {
      * @param frame the frame to draw the views on.
      */
     public ViewController(final JFrame frame) {
+        // Create menu
+        frame.setJMenuBar(new Views.Menu(onMenuClicked));
 
-        frame.setJMenuBar(new Menu(onMenuClicked));
-
+        // Create main containing panel
         JPanel mainPanel = new JPanel(new BorderLayout());
         frame.add(mainPanel);
 
+        // Add content manager to center
         mainPanel.add(contentManager, BorderLayout.CENTER);
 
-        JButton btnUpdate = new JButton("Update");
+        // Create bottom bar
+        JPanel bottomBar = new JPanel();
+        bottomBar.setLayout(new BoxLayout(bottomBar, BoxLayout.X_AXIS));
+        mainPanel.add(bottomBar, BorderLayout.SOUTH);
+
+        // Add status panel to bottom bar
+        bottomBar.add(statusPanel);
+
+        // Add update button to bottom bar
+        JButton btnUpdate = new JButton("Update now");
         btnUpdate.addActionListener(e -> timer.restart());
-        frame.add(btnUpdate, BorderLayout.PAGE_END);
+        bottomBar.add(btnUpdate);
 
-
+        // Start the update timer
         timer = new Timer(pref.getInt(NUM_UPDATE_INTERVAL_MINUTES_KEY, UPDATE_INTERVAL_MINUTES_DEFAULT)*60000, actionEvent -> doUpdateChannels());
         timer.setInitialDelay(0);
         timer.start();
@@ -163,9 +173,12 @@ public class ViewController {
      * Initiates new download for Channels and sets the view to loading state.
      */
     private void doUpdateChannels () {
-        contentManager.changeViewTo(0, new LoadingView());
-        contentManager.clear(1);
-        contentManager.clear(2);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            statusPanel.setText("Fetching channels...");
+            contentManager.changeViewTo(0, new LoadingView());
+            contentManager.clear(1);
+            contentManager.clear(2);
+        });
         new GetDataListBackgroundWorker<Channel, ArrayList<Channel>>(onChannelDownloadComplete, EndpointAPI.CHANNELS, Channel.class).execute();
     }
 
@@ -181,5 +194,14 @@ public class ViewController {
         frame.pack();
         frame.setVisible (true);
         return frame;
+    }
+
+    /**
+     * Show error message to user.
+     * @param e exception to show.
+     */
+    private void handleError(Exception e, int viewIndex) {
+        statusPanel.setText("Failed to load data: "+e.getMessage());
+        contentManager.changeViewTo(viewIndex, new ErrorView(e.getMessage()));
     }
 }

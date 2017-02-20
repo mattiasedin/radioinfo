@@ -28,7 +28,7 @@ public class TableIconView<T extends IconViewModel> extends JPanel {
 
     protected static final int ICON_SIZE = 150;
 
-    private final String dateFormat = "HH:ss";
+    private final String dateFormat = "HH:mm";
 
 
     /**

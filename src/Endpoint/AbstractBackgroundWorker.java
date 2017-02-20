@@ -47,10 +47,10 @@ public abstract class AbstractBackgroundWorker<T> extends SwingWorker<T, Integer
             try {
                 listener.actionPerformed(new ActionEvent(get(), ActionEvent.ACTION_PERFORMED, "Ok"));
             } catch (InterruptedException | ExecutionException e) {
-                listener.actionPerformed(new ActionEvent("The operation was canceled, please try again", ActionEvent.ACTION_PERFORMED, "Error"));
+                listener.actionPerformed(new ActionEvent(new Exception("The operation was canceled, please try again"), ActionEvent.ACTION_PERFORMED, "Error"));
             }
         } else {
-            listener.actionPerformed(new ActionEvent(failedException.getMessage(), ActionEvent.ACTION_PERFORMED, "Error"));
+            listener.actionPerformed(new ActionEvent(failedException, ActionEvent.ACTION_PERFORMED, "Error"));
         }
     }
 

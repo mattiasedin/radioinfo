@@ -1,4 +1,4 @@
-package Controller;
+package Views;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,14 +8,14 @@ import java.awt.*;
  *
  * This is a wrapper for dynamic JPanels. The JPanels can be changed at runtime for a dynamic handling of the content.
  */
-public class ContentViewManager extends JPanel {
+public class ContentViewSwitcher extends JPanel {
 
     private JPanel currentView;
 
     /**
      * Constructor for view manager with empty view.
      */
-    public ContentViewManager() {
+    public ContentViewSwitcher() {
         super(new GridLayout());
     }
 

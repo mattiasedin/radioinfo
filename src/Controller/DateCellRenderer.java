@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class DateCellRenderer extends DefaultTableCellRenderer {
 
-    private final String format;
+    private final SimpleDateFormat sdf;
 
     /**
      * Constructor for date renderer
@@ -19,12 +19,12 @@ public class DateCellRenderer extends DefaultTableCellRenderer {
      */
     public DateCellRenderer(String format) {
         super();
-        this.format = format;
+        sdf = new SimpleDateFormat(format);
     }
 
     @Override
     public void setValue(final Object value) {
-        final SimpleDateFormat sdf = new SimpleDateFormat(format);
+
         if(value != null && value instanceof Date){
             String strValue = sdf.format(value);
             super.setText(strValue);

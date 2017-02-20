@@ -1,0 +1,186 @@
+@startuml
+
+package Controllers #DDDDDD {
+
+    abstract class AbstractTableModel
+    class DataTableModel<T> extends AbstractTableModel {
+        -ArrayList<T> dataList;
+        +T getElementAtRow(int row)
+    }
+    class DataIconTableModel<T extends IconViewModel> extends DataTableModel
+    class ScheduleTableModel<Schedulepisode> extends DataIconTableModel
+
+
+    class ViewController {
+        -SplitView contentManager
+
+        -ActionListener onProgramDownloaded
+        -ActionListener onScheduleClicked
+        -ActionListener onScheduleDownloadComplete
+        -ActionListener onChannelClicked
+        -ActionListener onChannelDownloadComplete
+        -ActionListener onSettingsChanged
+        -ActionListener onMenuClicked
+
+        -void doUpdateChannels()
+        -void handleError(Exception e, int viewIndex)
+    }
+
+
+    class GUI {
+        -ViewController controller
+    }
+
+
+
+    ViewController *-- GUI
+
+}
+
+class Main {
+    +{static} void main(String[] args)
+}
+
+GUI *-- Main
+
+package Endpoint #DDDDDD {
+    abstract class AbstractBackgroundWorker<T> extends SwingWorker {
+        -ActionListener listener;
+        -String dataUri;
+        -Exception failedException;
+
+        #T doInBackground()
+        #void done()
+        {abstract} T getData(String url) throws Exception
+    }
+
+    class GetDataBackgroundWorker<T> extends AbstractBackgroundWorker {
+        -EndpointAPIReader<T> dr;
+        #T getData(String url)
+    }
+
+    class GetDataListBackgroundWorker<T, U extends ArrayList<T>> extends AbstractBackgroundWorker {
+        -EndpointAPIReader<T> dr;
+        #U getData(String url)
+    }
+
+    class GetSchedulesBackgroundWorker extends GetDataListBackgroundWorker {
+        #ArrayList<Scheduledepisode> getData(String url)
+    }
+
+    class GetImageBackgroundWorker<Image> extends AbstractBackgroundWorker {
+        #Image getData(String url)
+    }
+
+    class EndpointAPIReader<T> {
+        -Class<T> typeParameterClass;
+        +ArrayList<T> getDataListFromUri(String uri)
+        +T getDataFromUri(String uri)
+        {static} Image getImageFromUri(String uri)
+    }
+
+    class NodeReader<T> {
+        -Class<T> typeParameterClass;
+        +Node findClassNodeInChilds(Node parentNode)
+        +{static} Node findNodeByNameInChilds(Node parentNode, String nameToFind)
+        +T nodeToObject(Node nodeToConvert)
+        +ArrayList<T> getObjectListFromNode(Node nodeListContainer)
+    }
+
+    EndpointAPIReader *-- NodeReader
+    AbstractBackgroundWorker *-- EndpointAPIReader
+}
+
+package Models #DDDDDD {
+    annotation ApiModel
+    annotation ApiModelData
+    annotation TableDisplay
+
+    abstract class IconViewModel
+
+    class Channel extends IconViewModel {
+        -int id
+        -String name
+        -String image
+    }
+    class Scheduledepisode extends IconViewModel {
+        -int episodeid
+        -String title
+        -Date starttimeutc
+        -Date endtimeutc
+        -Program program
+        -String imageurl
+    }
+    class Program extends IconViewModel {
+        -int id
+        -String name
+        -String broadcastinfo
+        -String programimage
+        -String description
+    }
+
+    class Pagination {
+        -int id
+        -String name
+        -String broadcastinfo
+        -String programimage
+        -String description
+    }
+ }
+
+package Views #DDDDDD {
+    class TableIconView<T extends IconViewModel> {
+        #int[] getIconColumns()
+        +void setColumnWidth(int columnIndex, int width)
+        +T getSelectedItem()
+        +void setOnListItemClickListener(ActionListener onListItemClickListener)
+        +void scrollTo(int index) {
+    }
+    class TableScheduleView extends TableIconView {
+        -ArrayList<Scheduledepisode> data;
+        +void scrollToCurrent()
+    }
+
+    class AboutView
+    class ErrorView
+    class LoadingView
+    class Menu
+    class PreferencesView {
+        -ActionListener listener;
+        +PreferencesView(ActionListener listener, int updateInterval)
+    }
+
+    class ContentViewSwitcher {
+        -JPanel currentView;
+        +void changeViewTo(JPanel view)
+        +void clear()
+    }
+    class SplitView {
+        -ContentViewManager[] viewManagers
+        +void changeViewTo(int index, JPanel view)
+        +void clear(int i)
+    }
+    class StatusBar {
+        +void setText(String text)
+    }
+
+    SplitView *-- ContentViewSwitcher
+}
+
+ViewController *-- Views
+ViewController *-- Endpoint
+
+
+
+EndpointAPIReader *-- ApiModel
+EndpointAPIReader -- Pagination
+NodeReader *-- ApiModel
+NodeReader *-- ApiModelData
+
+TableIconView *-- TableDisplay
+DataTableModel *-- TableDisplay
+
+
+
+
+@enduml
